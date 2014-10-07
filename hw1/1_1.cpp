@@ -33,7 +33,11 @@ int main( int argc , char *argv[] ){
 		pid_t x ; 
 		x = wait( &status ); 
 		//printf("Signal: %d\nStatus: %d\nEXITED: %d\nx: %d\n", WIFSIGNALED( x ), status, WIFEXITED( x ) ,x) ;
-		
+		int ifSig = WIFSIGNALED( status ) ; 
+		int term = WTERMSIG( status );
+
+		printf("%d %d\n",ifSig, term) ; 
+
 		printf("---------CHILD PROCESS END---------\n");
 		printf("Receiving the SIGCHLD signal\n\n");
 		printf("Get the status is %d\n",status ) ;
