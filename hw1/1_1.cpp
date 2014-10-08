@@ -11,7 +11,7 @@ using namespace std;
 
 int main( int argc , char *argv[] ){
 	int status ; 
-
+	printf("sig = %d\n",SIGALRM);
 	printf("Process fork!\n");
 	printf("Child Process executes Test program!!\n");
 	
@@ -25,9 +25,9 @@ int main( int argc , char *argv[] ){
 		exit( -1 ) ;
 	}
 	else if( pid == 0 ){
-		printf("---------CHILD PROCESS BEGIN---------\n");
-		execl( argv[1] ,NULL );
-		exit( 1 ) ;
+		//printf("---------CHILD PROCESS BEGIN---------\n");
+		execl( argv[1], NULL  );
+		exit( 0 ) ;
 	}
 	else{
 		pid_t x ; 
@@ -38,7 +38,7 @@ int main( int argc , char *argv[] ){
 
 		printf("%d %d\n",ifSig, term) ; 
 
-		printf("---------CHILD PROCESS END---------\n");
+		//printf("---------CHILD PROCESS END---------\n");
 		printf("Receiving the SIGCHLD signal\n\n");
 		printf("Get the status is %d\n",status ) ;
 		exit( 0 ) ;
