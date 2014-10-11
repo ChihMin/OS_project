@@ -12,7 +12,7 @@ using namespace std;
 bool check = true; 
 
 void print_signal( int termsig ){
-    printf("---------- error detection ----------\n") ; 
+    printf("--------------- ERROR DETECTION ---------------\n") ; 
     printf("CHILD PROCESS ") ; 
     switch( termsig ){
         case SIGHUP:
@@ -73,9 +73,8 @@ void mySignal( int sig ){
 	int status; 
 
 
-    printf("Hello! I'm parent, my pid is %d\n\n",getpid() ) ; 
 	pid_t childPid = wait( &status ) ; 	
-    printf("Receving the SIGSHLD signal\n\n") ; 
+    printf("\nReceving the SIGSHLD signal\n\n") ; 
 
 	if( WIFEXITED( status ) ){
 		printf("Normal terminationwith exit status %d.\n", WEXITSTATUS(status));
@@ -87,9 +86,12 @@ void mySignal( int sig ){
 	        printf("CHILD PROCESS FAILED\n") ; 
 	}
 	else if( WIFSTOPPED( status ) ){
-		printf("CHILD PROCESS  was stopped by signal %d\n", (int)childPid, WSTOPSIG(status));
+		printf("CHILD PROCESS  was stopped by signal %d\n", WSTOPSIG(status));
 	}
-	
+    else{
+        printf("Unexpected signal condition!!\n") ; 
+    }
+
 	check = false ; 
 }
 
@@ -100,6 +102,8 @@ void sayHello( int sig ){
 
 int main( int argc , char *argv[] ){
     printf("Process fork!!\n") ; 		
+	printf("Child process execute Test program!!\n") ; 	
+	
 	signal( SIGCHLD, mySignal ) ; 
 	pid_t pid = fork() ; 
 	//signal( SIGALRM, sayHello ) ; 
@@ -109,10 +113,12 @@ int main( int argc , char *argv[] ){
 		exit( -1 ) ;
 	}
 	else if( pid == 0 ){
-	    printf("Child process execute Test program!!\n") ; 	
 		execvp( argv[1], NULL );
 		exit( 1 ) ;
 	}
+    else{ 
+        printf("Hello! I'm parent, my pid is %d\n\n",getpid() ) ; 
+    }
 
 	while( check ) ; 
 	return 0 ; 
