@@ -15,15 +15,16 @@ void mySignal( int sig ){
 	int status; 
 
 
+    printf("Hello! I'm parent, my pid is %d\n\n",getpid() ) ; 
 	pid_t childPid = wait( &status ) ; 	
+    printf("Receving the SIGSHLD signal\n\n") ; 
 
 	if( WIFEXITED( status ) ){
-	//	printf("The child is terminated success!!\n"); 
-		printf("Child %d exited with exit code %d.\n", (int)childPid, WEXITSTATUS(status));
+		printf("Normal terminationwith exit status %d.\n", WEXITSTATUS(status));
 	}
 	else if( WIFSIGNALED( status ) ){
 		int termsig = WTERMSIG( status ) ;
-		printf("termsig = %d\n", termsig ) ;  
+		printf("termsig = %d\n", termsig ) ; 
 	}
 	else if( WIFSTOPPED( status ) ){
 		printf("Child %d was stopped by signal %d.\n", (int)childPid, WSTOPSIG(status));
@@ -38,17 +39,18 @@ void sayHello( int sig ){
 }
 
 int main( int argc , char *argv[] ){
-		
+    printf("Process fork!!\n") ; 		
 	signal( SIGCHLD, mySignal ) ; 
 	pid_t pid = fork() ; 
-	signal( SIGALRM, sayHello ) ; 
+	//signal( SIGALRM, sayHello ) ; 
 
 	if( pid < 0 ){
 		printf("fork error\n");
 		exit( -1 ) ;
 	}
 	else if( pid == 0 ){
-		execl( argv[1], NULL );
+	    printf("Child process execute Test program!!\n") ; 	
+		execvp( argv[1], NULL );
 		exit( 1 ) ;
 	}
 
