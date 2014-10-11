@@ -36,9 +36,37 @@ void print_signal( int termsig ){
         case SIGKILL:
             printf("Kill signal\n");
             break;
-
+        case SIGSEGV:
+            printf("Segmentation fault\n") ; 
+            break;
+        case SIGALRM:
+            printf("Timer signal from alarm(2)\n");
+            break ;
+        case SIGTERM:
+            printf("Termination signal\n");
+            break;
+        case SIGUSR1:
+            printf("User-defined signal 1\n") ; 
+            break; 
+        case SIGUSR2:
+            printf("User-defined signal 2\n") ; 
+            break; 
+        case SIGCONT:
+            printf("Continue if stopped\n") ; 
+            break; 
+        case SIGSTOP:
+            printf("Stop process\n") ; 
+            break; 
+        case SIGTSTP:
+            printf("Stop typed at tty\n") ; 
+            break; 
+        case SIGTTIN:
+            printf("tty input for background process\n") ;
+            break; 
+        case SIGTTOU:
+            printf("tty output for background process\n") ; 
+            break ; 
     }
-    
 }
 
 void mySignal( int sig ){
