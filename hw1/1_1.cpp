@@ -95,18 +95,13 @@ void mySignal( int sig ){
 	check = false ; 
 }
 
-
-void sayHello( int sig ){
-	printf("It's time to say hello !!\n") ; 
-}
-
 int main( int argc , char *argv[] ){
     printf("Process fork!!\n") ; 		
 	printf("Child process execute Test program!!\n") ; 	
 	
 	signal( SIGCHLD, mySignal ) ; 
 	pid_t pid = fork() ; 
-	//signal( SIGALRM, sayHello ) ; 
+
 
 	if( pid < 0 ){
 		printf("fork error\n");
