@@ -11,6 +11,36 @@ using namespace std;
 
 bool check = true; 
 
+void print_signal( int termsig ){
+    printf("---------- error detection ----------\n") ; 
+    printf("CHILD PROCESS ") ; 
+    switch( termsig ){
+        case SIGHUP:
+            printf("Hangup detected on controlling terminal or death of controlling process\n");
+            break; 
+        case SIGINT:
+            printf("Interrupt from keyboard\n");
+            break ;
+        case SIGQUIT:
+            printf("Quit from keyboard\n");
+            break;
+        case SIGILL:
+            printf("Illegal Instruction\n");  
+            break ; 
+        case SIGABRT:
+            printf("Abort signal from abort(3)\n") ; 
+            break ;
+        case SIGFPE:
+            printf("Floating point exception\n");
+            break; 
+        case SIGKILL:
+            printf("Kill signal\n");
+            break;
+
+    }
+    
+}
+
 void mySignal( int sig ){
 	int status; 
 
@@ -24,10 +54,12 @@ void mySignal( int sig ){
 	}
 	else if( WIFSIGNALED( status ) ){
 		int termsig = WTERMSIG( status ) ;
-		printf("termsig = %d\n", termsig ) ; 
+        print_signal( termsig ) ;
+	    if( WCOREDUMP( status ) )
+	        printf("CHILD PROCESS FAILED\n") ; 
 	}
 	else if( WIFSTOPPED( status ) ){
-		printf("Child %d was stopped by signal %d.\n", (int)childPid, WSTOPSIG(status));
+		printf("CHILD PROCESS  was stopped by signal %d\n", (int)childPid, WSTOPSIG(status));
 	}
 	
 	check = false ; 
