@@ -13,19 +13,19 @@ using namespace std;
 vector < pid_t > pid_list ;  
 int cnt ; 
 int programNumber ; 
-//bool check = true; 
+
 void print_signal( int termsig ); 
 void mySignal( pid_t childPid ) ; 
 
 void process_dfs( int step , char *argv[], vector < pid_t > &v  ){
 	if( step == programNumber - 1 ){	
-		printf("******************************\n");
-		printf("Here is relationship between processes!!\n");
+		printf("****************************************\n\n");
+		printf("Here is relationship between processes!!\n\n");
 		
 		for(int i = 0; i < pid_list.size() - 1; i++ )
-			printf("%d->",pid_list[i]);
-		printf("%d\n", pid_list[pid_list.size()-1] ) ;  
-		printf("*****************************\n");
+			printf("%d -> ",pid_list[i]);
+		printf("%d\n\n", pid_list[pid_list.size()-1] ) ;  
+		printf("*****************************************\n");
 	}
 	else{	 	
 		v.push_back( getpid() ) ; 
