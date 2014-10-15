@@ -16,6 +16,15 @@ int programNumber ;
 
 void print_signal( int termsig ); 
 void mySignal( pid_t childPid ) ; 
+void process_dfs( int step, char *argv[], vector <pid_t > &v ) ; 
+
+	
+int main( int argc , char *argv[] ){
+	programNumber = argc ;
+	process_dfs( 0 , argv, pid_list ) ;  
+
+	return 0 ; 
+}
 
 void process_dfs( int step , char *argv[], vector < pid_t > &v  ){
 	if( step == programNumber - 1 ){	
@@ -52,14 +61,6 @@ void process_dfs( int step , char *argv[], vector < pid_t > &v  ){
 			mySignal( pid ) ; 
 		}
 	}
-}
-
-	
-int main( int argc , char *argv[] ){
-	programNumber = argc ;
-	process_dfs( 0 , argv, pid_list ) ;  
-
-	return 0 ; 
 }
 
 
