@@ -25,73 +25,36 @@ void process_dfs( int step , char *argv[] ){
 		else if( pid == 0 ){
 			
 			process_dfs( step + 1 , argv ) ; 
+
+			printf("\n=================================================\n");
+			printf("=================================================\n\n");
+			printf("process fork!!\n") ; 		
+			printf("child process execute test program!!\n") ; 	
+			printf("hello! i'm parent, my pid is %d\n\n",getppid() ) ; 
+
 			printf("execute %s\n", argv[step+1] );
 			execl( argv[step+1], NULL );
 			exit( 1 ) ;
 		}
-		else{ 
-/*	
-			printf("------------------START-------------------\n");
-			printf("mypid is %d, and step is %d\n",getpid(), step);
-			printf("process fork!!\n") ; 		
-			printf("child process execute test program!!\n") ; 	
-			printf("hello! i'm parent, my pid is %d\n\n",getpid() ) ; 
-*/
-			mySignal( pid ) ; 
-			printf("------------------END-------------------\n");
-		}
+		else	mySignal( pid ) ; 
+	
 	}
 }
 
 	
 int main( int argc , char *argv[] ){
 	programNumber = argc ;
-	for(int i = 1; i < argc; ++i ){
-		printf("%d is %s\n",i,argv[i]);
-	}
-
 
 	process_dfs( 0 , argv ) ;  
-/*
-    printf("process fork!!\n") ; 		
-	printf("child process execute test program!!\n") ; 	
-	
-	signal( sigchld, mysignal ) ; 
-	pid_t pid = fork() ; 
-
-
-	if( pid < 0 ){
-		printf("fork error\n");
-		exit( -1 ) ;
-	}
-	else if( pid == 0 ){
-		execl( argv[1], null );
-		exit( 1 ) ;
-	}
-    else{ 
-        printf("hello! i'm parent, my pid is %d\n\n",getpid() ) ; 
-    }
-
-	while( check ) ; */
 	return 0 ; 
 }
 
 
 void mySignal( pid_t childPid  ){
 	int status; 
-
-
 	waitpid( childPid, &status, 0  ) ; 	
 
-	printf("------------------START-------------------\n");
-	//printf("mypid is %d, and step is %d\n",getpid(), step);
-	printf("process fork!!\n") ; 		
-	printf("child process execute test program!!\n") ; 	
-	printf("hello! i'm parent, my pid is %d\n\n",getpid() ) ; 
-
-
-    printf("\nReceving the SIGSHLD signal\n\n") ; 
-
+	printf("\nReceving the SIGSHLD signal\n\n") ; 
 	if( WIFEXITED( status ) ){
 		printf("Normal terminationwith exit status %d.\n", WEXITSTATUS(status));
 	}
