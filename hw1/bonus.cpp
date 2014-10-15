@@ -6,25 +6,38 @@
 #include <signal.h>
 #include <cstring>
 #include <errno.h>
+#include <vector>
+
 using namespace std;
 
+vector < pid_t > pid_list ;  
+int cnt ; 
 int programNumber ; 
 //bool check = true; 
 void print_signal( int termsig ); 
 void mySignal( pid_t childPid ) ; 
 
-void process_dfs( int step , char *argv[] ){
-	if( step == programNumber - 1 )	return  ; 
+void process_dfs( int step , char *argv[], vector < pid_t > &v  ){
+	if( step == programNumber - 1 ){	
+		printf("******************************\n");
+		printf("Here is relationship between processes!!\n");
+		
+		for(int i = 0; i < pid_list.size() - 1; i++ )
+			printf("%d->",pid_list[i]);
+		printf("%d\n", pid_list[pid_list.size()-1] ) ;  
+		printf("*****************************\n");
+	}
 	else{	 	
+		v.push_back( getpid() ) ; 
 		pid_t pid = fork() ; 
-		//process_dfs( step + 1 , argv ) ; 
+		
 		if( pid < 0 ){
 			printf("fork error\n");
 			exit( -1 ) ;
 		}
 		else if( pid == 0 ){
 			
-			process_dfs( step + 1 , argv ) ; 
+			process_dfs( step + 1 , argv, v ) ; 
 
 			printf("\n=================================================\n");
 			printf("=================================================\n\n");
@@ -32,20 +45,20 @@ void process_dfs( int step , char *argv[] ){
 			printf("child process execute test program!!\n") ; 	
 			printf("hello! i'm parent, my pid is %d\n\n",getppid() ) ; 
 
-			printf("execute %s\n", argv[step+1] );
 			execl( argv[step+1], NULL );
 			exit( 1 ) ;
 		}
-		else	mySignal( pid ) ; 
-	
+		else{	
+			mySignal( pid ) ; 
+		}
 	}
 }
 
 	
 int main( int argc , char *argv[] ){
 	programNumber = argc ;
+	process_dfs( 0 , argv, pid_list ) ;  
 
-	process_dfs( 0 , argv ) ;  
 	return 0 ; 
 }
 
@@ -71,7 +84,6 @@ void mySignal( pid_t childPid  ){
         printf("Unexpected signal condition!!\n") ; 
     }
 
-	//check = false ; 
 }
 
 
