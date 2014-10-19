@@ -1,0 +1,1 @@
+cmd_/home/sscloud/OsHomework/hw1/kernel_object/Template.ko := ld -r -m elf_x86_64 -T /usr/src/linux-headers-3.13.0-36-generic/scripts/module-common.lds --build-id  -o /home/sscloud/OsHomework/hw1/kernel_object/Template.ko /home/sscloud/OsHomework/hw1/kernel_object/Template.o /home/sscloud/OsHomework/hw1/kernel_object/Template.mod.o

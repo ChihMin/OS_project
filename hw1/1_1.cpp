@@ -77,7 +77,7 @@ void mySignal( int sig ){
 
 
 	pid_t childPid = wait( &status ) ; 	
-    printf("\nReceving the SIGSHLD signal\n\n") ; 
+    printf("\nReceving the SIGCHLD signal\n\n") ; 
 
 	if( WIFEXITED( status ) ){
 		printf("Normal terminationwith exit status %d.\n", WEXITSTATUS(status));

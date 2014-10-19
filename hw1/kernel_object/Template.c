@@ -1,8 +1,11 @@
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/pid.h>
+#include <linux/kthread.h>
+#include <linux/time.h>
+#include <linux/timer.h>
 
-
+MODULE_DESCRIPTION("TEST!!");
 MODULE_LICENSE("GPL");
 
 int my_monitor(void *argc)
@@ -12,7 +15,8 @@ int my_monitor(void *argc)
 	/* execute program */
 
 	/* Check signal */
-
+	
+	return 0; 
 }
 
 static int __init kernel_object_test_init(void)
@@ -25,8 +29,7 @@ static int __init kernel_object_test_init(void)
 	/* Write your Code here */
 
     /* create a kernel thread to run my_fork */
-
-    return 0;
+	return 0;
 }
 
 static void __exit kernel_object_test_exit(void)

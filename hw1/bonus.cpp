@@ -30,7 +30,7 @@ void process_dfs( int step , char *argv[], vector < pid_t > &v  ){
 	if( step == programNumber - 1 ){	
 		printf("****************************************\n\n");
 		printf("Here is relationship between processes!!\n\n");
-		
+		v.push_back( getpid() ) ; 
 		for(int i = 0; i < pid_list.size() - 1; i++ )
 			printf("%d -> ",pid_list[i]);
 		printf("%d\n\n", pid_list[pid_list.size()-1] ) ;  
@@ -68,7 +68,7 @@ void mySignal( pid_t childPid  ){
 	int status; 
 	waitpid( childPid, &status, 0  ) ; 	
 
-	printf("\nReceving the SIGSHLD signal\n\n") ; 
+	printf("\nReceving the SIGCHLD signal\n\n") ; 
 	if( WIFEXITED( status ) ){
 		printf("Normal terminationwith exit status %d.\n", WEXITSTATUS(status));
 	}
