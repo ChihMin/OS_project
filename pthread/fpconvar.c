@@ -4,8 +4,7 @@
 #include <string.h>
 #define NUM_THREAD 3
 
-int isPrime ; 
-int ansPrime = 2 ; 
+int isPrime ;	  
 int isFinished = 0 ;
 int lastPrime = 2 ;
 int lastThread = -1;
@@ -54,15 +53,13 @@ void *inc_count( void *t ){
 			Signal = 1 ;
 		}
 
-		if( p == TCOUNT ){
+		if( p >= TCOUNT ){
 			isFinished = 1 ;
 			pthread_mutex_unlock( &count_mutex ) ; 
 			for( j = 0; j < 100000; ++j ) result += (double)rand() ;   
 			continue ; 
 		} 
-		pthread_mutex_unlock( &count_mutex ) ; 
-
-					
+		pthread_mutex_unlock( &count_mutex ) ; 	
 		for( j = 0; j < 100000; ++j ) result += (double)rand() ;   
 
 	}
@@ -84,6 +81,8 @@ void *watch_count( void *t ){
 		printf("watch_count() : thread %d Updating the value of p....\n", my_id ) ;
 		printf("the lastest prime found before p = %d\n", lastPrime ) ;  
 		printf("watch_count() : thread %d count p now = %d\n", my_id, p = p + lastPrime ) ;
+		
+		if( p >= TCOUNT )	isFinished = 1 ;
 	}
 	pthread_mutex_unlock( &count_mutex ) ;
 	pthread_exit( NULL ) ;  
@@ -109,7 +108,7 @@ int main( int argc, char *argv[] ){
 	for(i = 0; i < NUM_THREAD; ++i ){
 		pthread_join( threads[i], NULL ) ; 
 	}
-	printf("Main() : Wait on %d threads, and count result is %d\n", NUM_THREAD, p ) ; 
+	printf("Main() : Waited and joined with %d threads. Final value of count = %d\n", NUM_THREAD, p ) ; 
 	
 	pthread_mutex_destroy( &count_mutex) ;
 	pthread_cond_destroy( &count_threshold_cv ) ; 
