@@ -42,4 +42,3 @@ Extra remind:
 	"kernel_object" folder contains LINUX kernel code.
 
 	But it does NOT offer any service currently.
-
