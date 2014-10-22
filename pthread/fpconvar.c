@@ -70,7 +70,7 @@ void *watch_count( void *t ){
 	
 	printf("Starting Watch_count(): thread %d, p = %d Going to wait...\n",my_id,p ) ; 
 	pthread_mutex_lock( &count_mutex ) ;	// lock
-	if( p <= COUNT_LIMIT ){	
+	if( p < COUNT_LIMIT ){	
 		pthread_cond_wait( &count_threshold_cv, &count_mutex ) ; // wait signal 
 															// let mutex unlock	
 		printf("watch_count(): thread %d Conditional signal received. p = %d\n",my_id ,p);
