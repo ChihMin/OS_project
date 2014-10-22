@@ -30,8 +30,9 @@ void *inc_count( void *t ){
 		if( isPrime	)	lastPrime = p ;		// if lastnumber is prime, lastprime = p  
 		p++;							// let p add 1 first 
 		
-		isPrime = 1 ;					// If p is prime, then isPrime = 1
-		for(int i=2;i < p ;++i ){		// Judge whether p is prime 
+		isPrime = 1 ;
+		int i ;					// If p is prime, then isPrime = 1
+		for(i=2;i < p ;++i ){		// Judge whether p is prime 
 			if( !( p % i )){
 				isPrime = 0 ; 
 				break; 

@@ -701,6 +701,7 @@ deps_/home/sscloud/OsHomework/hw1/kernel_object/Template.o := \
     $(wildcard include/config/security/selinux.h) \
   include/linux/llist.h \
     $(wildcard include/config/arch/have/nmi/safe/cmpxchg.h) \
+  include/linux/kthread.h \
 
 /home/sscloud/OsHomework/hw1/kernel_object/Template.o: $(deps_/home/sscloud/OsHomework/hw1/kernel_object/Template.o)
 
