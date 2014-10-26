@@ -56,12 +56,13 @@ int main( int argc, char *argv[] ){
 	pthread_cond_init( &map_cond , NULL ) ; 
 	memset( map , 0, sizeof( map ) ) ;
 	 
-	for(int i = 0; i < ROW; ++i ){	
-		for(int j = 0; j < COLUMN - 1; ++j )	map[i][j] = ' ' ;  
+	int i , j ; 
+	for( i = 0; i < ROW; ++i ){	
+		for(j = 0; j < COLUMN - 1; ++j )	map[i][j] = ' ' ;  
 		woods[i] = i ; 
 	}
 
-	for(int i = 0; i < NUM_THREAD; ++i ){
+	for(i = 0; i < NUM_THREAD; ++i ){
 		pthread_create( &threads[i], NULL, wood_move, (void*)i ) ;  
 	}
 	
