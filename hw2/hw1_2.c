@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <curses.h>
 #define ROW 15
 #define COLUMN 50 
 #define NUM_THREAD 15
@@ -17,10 +18,6 @@ pthread_cond_t map_cond ; // thread condition variable
 //pthread_cond_wait( &count_threshold_cv, &mutex ) ;
 char map[ROW][COLUMN] ; 
 int woods[ROW];
-
-void print_map(){
-	
-}
 
 void *wood_move( void *t ){
 	int my_id = (int)t ; 
@@ -55,7 +52,8 @@ int main( int argc, char *argv[] ){
 	pthread_mutex_init( &map_mutex, NULL ) ;
 	pthread_cond_init( &map_cond , NULL ) ; 
 	memset( map , 0, sizeof( map ) ) ;
-	 
+	
+	printf("\e[?25l") ; 
 	int i , j ; 
 	for( i = 0; i < ROW; ++i ){	
 		for(j = 0; j < COLUMN - 1; ++j )	map[i][j] = ' ' ;  
