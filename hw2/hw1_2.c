@@ -3,32 +3,69 @@
 #include <pthread.h>
 #include <string.h>
 #include <unistd.h>
-#define NUM_THREAD 3
+#include <string.h>
+#include <time.h>
+#define ROW 15
+#define COLUMN 50 
+#define NUM_THREAD 15
 
-pthread_mutex_t count_mutex ;	// thread mutex  
-pthread_cond_t count_threshold_cv ; // thread condition variable 
+pthread_mutex_t map_mutex ;	// thread mutex  
+pthread_cond_t map_cond ; // thread condition variable 
 //pthread_mutex_lock( &mutex ) ; 
 //pthread_mutex_unlock( &mutex ) ; 
 //pthread_cond_signal( &count_threshold_cv, &mutex  ) ; 
 //pthread_cond_wait( &count_threshold_cv, &mutex ) ;
+char map[ROW][COLUMN] ; 
+int woods[ROW];
+
+void print_map(){
+	
+}
+
+void *wood_move( void *t ){
+	int my_id = (int)t ; 
+	while( 1 ){
+
+		if( my_id % 2 )	woods[my_id] = ( woods[my_id] + 1 ) % (COLUMN - 1) ; 
+		else{
+			woods[my_id] = woods[my_id] - 1 ;  ;
+			if( woods[my_id] < 0 )	woods[my_id] += (COLUMN - 1 ) ; 
+		}
+		pthread_mutex_lock( &map_mutex ) ; 
+		printf("\033[0;0H\033[2J");
+		
+		int i , j ; 
+		for(j = 0; j < COLUMN - 1; ++j ) map[my_id][j] = ' ' ;
+		map[my_id][COLUMN-1] = 0 ;    	
+		for(i = 0, j = woods[my_id]; i < 7; ++i, ++j){
+			map[my_id][ j % (COLUMN - 1) ] = '=' ; 
+		}
+		 
+		for( i = 0; i < ROW; ++i)	puts( map[i] ); 
+		pthread_mutex_unlock( &map_mutex ) ; 
+		usleep(  (rand() % 20 ) * 10000 ) ;
+	}
+	pthread_exit( NULL ) ; 
+}
 
 int main( int argc, char *argv[] ){
-	
-	TCOUNT = atoi( argv[1] ) ;	// trans string to num TCOUNT
-	COUNT_LIMIT = atoi( argv[2] ) ; 
-
+	srand( time( 0 ) ) ; 
 	pthread_t threads[NUM_THREAD] ; 
 	
-	pthread_mutex_init( &count_mutex, NULL ) ;
-	pthread_cond_init( &count_threshold_cv , NULL ) ; 
+	pthread_mutex_init( &map_mutex, NULL ) ;
+	pthread_cond_init( &map_cond , NULL ) ; 
+	memset( map , 0, sizeof( map ) ) ;
+	 
+	for(int i = 0; i < ROW; ++i ){	
+		for(int j = 0; j < COLUMN - 1; ++j )	map[i][j] = ' ' ;  
+		woods[i] = i ; 
+	}
 
-	pthread_create( &threads[0], NULL, watch_count, (void*)t1 ) ; 
-	usleep( 200 ) ; 	//delay let thread 1 to listen signal of thread 2 3
-	pthread_create( &threads[1], NULL, inc_count, (void*)t2 ) ; 
-	pthread_create( &threads[2], NULL, inc_count, (void*)t3 ) ; 
-
+	for(int i = 0; i < NUM_THREAD; ++i ){
+		pthread_create( &threads[i], NULL, wood_move, (void*)i ) ;  
+	}
 	
-	pthread_mutex_destroy( &count_mutex) ;	// destroy mutex
-	pthread_cond_destroy( &count_threshold_cv ) ; // destroy condition 
+	pthread_mutex_destroy( &map_mutex) ;	// destroy mutex
+	pthread_cond_destroy( &map_cond ) ; // destroy condition 
 	pthread_exit( NULL ) ;	//exit 
 }
