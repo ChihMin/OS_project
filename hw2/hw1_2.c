@@ -16,8 +16,8 @@ pthread_cond_t map_cond ; // thread condition variable
 //pthread_mutex_unlock( &mutex ) ; 
 //pthread_cond_signal( &count_threshold_cv, &mutex  ) ; 
 //pthread_cond_wait( &count_threshold_cv, &mutex ) ;
-char map[ROW][COLUMN] ; 
-int woods[ROW];
+char map[ROW+10][COLUMN] ; 
+int woods[ROW+10];
 
 void *wood_move( void *t ){
 	int my_id = (int)t ; 
@@ -39,11 +39,11 @@ void *wood_move( void *t ){
 		 
 		printf("\033[0;0H\033[2J");
 		usleep( 1000 ) ; 
-		for( i = 0; i < ROW; ++i)	puts( map[i] );
+		for( i = 0; i <= ROW; ++i)	puts( map[i] );
 		
 		printf("\033[0;0H"); 
 		pthread_mutex_unlock( &map_mutex ) ; 
-		usleep(  (rand() % 20 ) * 10000 ) ;
+		usleep(  (rand() % 20 ) * 5000 ) ;
 	}
 	pthread_exit( NULL ) ; 
 }
@@ -58,12 +58,15 @@ int main( int argc, char *argv[] ){
 	
 	printf("\e[?25l") ; 
 	int i , j ; 
-	for( i = 0; i < ROW; ++i ){	
+	for( i = 1; i < ROW; ++i ){	
 		for(j = 0; j < COLUMN - 1; ++j )	map[i][j] = ' ' ;  
 		woods[i] = i ; 
 	}
 
-	for(i = 0; i < NUM_THREAD; ++i ){
+	for( j = 0; j < COLUMN - 1; ++j )	
+		map[ROW][j] = map[0][j] = '|' ;
+	puts( map[ROW] ) ;  
+	for(i = 1; i < NUM_THREAD; ++i ){
 		pthread_create( &threads[i], NULL, wood_move, (void*)i ) ;  
 		usleep( 200 ) ; 
 	}
