@@ -29,7 +29,6 @@ void *wood_move( void *t ){
 			if( woods[my_id] < 0 )	woods[my_id] += (COLUMN - 1 ) ; 
 		}
 		pthread_mutex_lock( &map_mutex ) ; 
-		printf("\033[0;0H\033[2J");
 		
 		int i , j ; 
 		for(j = 0; j < COLUMN - 1; ++j ) map[my_id][j] = ' ' ;
@@ -38,7 +37,11 @@ void *wood_move( void *t ){
 			map[my_id][ j % (COLUMN - 1) ] = '=' ; 
 		}
 		 
-		for( i = 0; i < ROW; ++i)	puts( map[i] ); 
+		printf("\033[0;0H\033[2J");
+		usleep( 1000 ) ; 
+		for( i = 0; i < ROW; ++i)	puts( map[i] );
+		
+		printf("\033[0;0H"); 
 		pthread_mutex_unlock( &map_mutex ) ; 
 		usleep(  (rand() % 20 ) * 10000 ) ;
 	}
@@ -62,6 +65,7 @@ int main( int argc, char *argv[] ){
 
 	for(i = 0; i < NUM_THREAD; ++i ){
 		pthread_create( &threads[i], NULL, wood_move, (void*)i ) ;  
+		usleep( 200 ) ; 
 	}
 	
 	pthread_mutex_destroy( &map_mutex) ;	// destroy mutex
