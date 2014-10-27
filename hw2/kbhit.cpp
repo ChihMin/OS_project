@@ -30,7 +30,7 @@ int kbhit(void){
 	}
 	return 0;
 }
-
+/*
  int main(){
 
 	char c = 'A' ; 
@@ -40,4 +40,4 @@ int kbhit(void){
 		puts("");
 	}
 	return 0 ;
- }
+ }*/
