@@ -27,7 +27,9 @@ pthread_cond_t map_cond ; // thread condition variable
 char map[ROW+10][COLUMN] ; 
 int woods[ROW+10] ;
 int speed[ROW+10] ; 
-
+bool isRunning = true ;
+bool isLose = false ; 
+bool isWin = false ;  
 
 int kbhit(void){
 	struct termios oldt, newt;
@@ -56,9 +58,15 @@ int kbhit(void){
 	}
 	return 0;
 }
+
+bool judge( int x , int y ){
+	if( y > COLUMN-1 )	return false ;
+	if( y < 0 )	return false ;
+	return true ;  
+}
 void *wood_move( void *t ){
 	int my_id = *((int*)&t) ; 
-	while( 1 ){
+	while( isRunning ){
 
 		if( my_id % 2 )	woods[my_id] = ( woods[my_id] + 1 ) % (COLUMN - 1) ; 
 		else{
@@ -67,15 +75,6 @@ void *wood_move( void *t ){
 		}
 		pthread_mutex_lock( &map_mutex ) ; 
 		
-		if( kbhit() ){
-			char dir = getchar() ; 
-			if( dir == 'w' || dir == 'W' )	frog.x-- ;
-			else if( dir == 'a' || dir == 'A' )	frog.y-- ;
-			else if( dir == 'd' || dir == 'D' )	frog.y++ ; 
-			else if( dir == 's' || dir == 'S' )	frog.x++ ;  
-			//else if( dir == 'q' || dir == 'Q' )	isRunngin = false ;
-		}
-
 		int i , j ; 
 		for(j = 0; j < COLUMN - 1; ++j ) map[my_id][j] = ' ' ;
 		map[my_id][COLUMN-1] = 0 ;    	
@@ -86,13 +85,40 @@ void *wood_move( void *t ){
 		for( j = 0; j < COLUMN - 1; ++j )	
 			map[ROW][j] = map[0][j] = '|' ;
 		
-		printf("\033[0;0H\033[2J");
+		if( kbhit() ){
+			char dir = getchar() ; 
+			if( dir == 'w' || dir == 'W' )	frog.x-- ;
+			else if( dir == 'a' || dir == 'A' )	frog.y-- ;
+			else if( dir == 'd' || dir == 'D' )	frog.y++ ; 
+			else if( dir == 's' || dir == 'S' ){	
+				if( frog.x < ROW )	frog.x++ ;  
+			}
+			else if( dir == 'q' || dir == 'Q' )	isRunning = false ;
+		}
+	
+		if( map[frog.x][frog.y] == ' ' || map[frog.x][frog.y] == 0 ){	
+			isRunning = false ; 
+			isLose = true ; 
+		}
+		else if( !judge( frog.x , frog.y ) ){	
+			isRunning = false ;
+			isLose = true;  
+		}
+		else if( frog.x == 0){
+			isRunning = false ;
+			isWin = true ; 
+		} 
+		if( isRunning ){
+			if( map[frog.x][frog.y] == '=' ){
+				if( my_id % 2 )	frog.y++ ; 
+				else	frog.y-- ; 	
+			}
+			printf("\033[0;0H\033[2J");		
+			usleep( 1000 ) ;
 		
-		usleep( 1000 ) ;
-		
-		map[frog.x][frog.y] = '0' ;  
-		for( i = 0; i <= ROW; ++i)	puts( map[i] );
-		
+			map[frog.x][frog.y] = '0' ;  
+			for( i = 0; i <= ROW; ++i)	puts( map[i] );
+		}
 		pthread_mutex_unlock( &map_mutex ) ; 
 		usleep(  speed[my_id] * 3000 ) ;
 	}
@@ -127,7 +153,15 @@ int main( int argc, char *argv[] ){
 		pthread_create( &threads[i], NULL, wood_move, (void*)i ) ;  
 		usleep( 200 ) ; 
 	}
-	
+	for(int i = 1; i < NUM_THREAD; ++i ){
+		pthread_join( threads[i], NULL ) ; 
+	}
+
+	printf("\033[0;0H\033[2J");
+	usleep( 1000 ) ;
+	if( isLose )	puts("You lose the game!!");
+	else if( isWin ) puts("You win the game!!");
+	else	puts("You exit the game.");
 	pthread_mutex_destroy( &map_mutex) ;	// destroy mutex
 	pthread_cond_destroy( &map_cond ) ; // destroy condition 
 	pthread_exit( NULL ) ;	//exit 
