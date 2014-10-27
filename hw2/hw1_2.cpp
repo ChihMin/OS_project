@@ -88,12 +88,16 @@ void *wood_move( void *t ){
 		if( kbhit() ){
 			char dir = getchar() ; 
 			if( dir == 'w' || dir == 'W' )	frog.x-- ;
-			else if( dir == 'a' || dir == 'A' )	frog.y-- ;
-			else if( dir == 'd' || dir == 'D' )	frog.y++ ; 
-			else if( dir == 's' || dir == 'S' ){	
+			if( dir == 'a' || dir == 'A' ){
+				frog.y--  ;
+			}
+			if( dir == 'd' || dir == 'D' )	{
+				frog.y++ ;
+			}
+			if( dir == 's' || dir == 'S' ){	
 				if( frog.x < ROW )	frog.x++ ;  
 			}
-			else if( dir == 'q' || dir == 'Q' )	isRunning = false ;
+			if( dir == 'q' || dir == 'Q' )	isRunning = false ;
 		}
 	
 		if( map[frog.x][frog.y] == ' ' || map[frog.x][frog.y] == 0 ){	
@@ -109,8 +113,8 @@ void *wood_move( void *t ){
 			isWin = true ; 
 		} 
 		if( isRunning ){
-			if( map[frog.x][frog.y] == '=' ){
-				if( my_id % 2 )	frog.y++ ; 
+			if( frog.x == my_id && map[frog.x][frog.y] == '=' ){
+				if( frog.x % 2 )	frog.y++ ; 
 				else	frog.y-- ; 	
 			}
 			printf("\033[0;0H\033[2J");		
