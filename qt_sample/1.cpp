@@ -11,6 +11,7 @@
 #include <QtCore>
 #include <QGraphicsItem>
 #include <signal.h>
+#include <unistd.h>
 #include <sys/times.h>
 
 
@@ -18,7 +19,9 @@ class SuperItem : public QGraphicsItem{
 
 public:
 	SuperItem( QGraphicsItem *parent = NULL ) ; 	
-		
+	void moveLeft(){
+		moveBy( 10 ,0 ) ; 
+	}
 protected:
 	void paint( QPainter *painter, 
 				const QStyleOptionGraphicsItem *option, 
@@ -50,6 +53,7 @@ void SuperItem::keyPressEvent( QKeyEvent *event ){
 			break ; 
 		
 		}
+	/*
 		case Qt::Key_Right : {
 			moveBy( 100, 0 ) ; 
 			break ;
@@ -65,7 +69,7 @@ void SuperItem::keyPressEvent( QKeyEvent *event ){
 		case Qt::Key_Down : {
 			moveBy( 0 , 100 ) ; 
 			break ; 
-		}
+		}*/
 	}
 	update() ; 	
 }
@@ -82,8 +86,18 @@ void SuperItem::paint( QPainter *painter,
 	painter->drawPixmap( 0 , 0 , 200 , 200  , pixImg ) ; 	
 }
 
+	
+SuperItem *superItem = new SuperItem() ; 
+
+void signal( int sig ){
+	superItem->moveLeft() ; 
+	ualarm( 20000, 0 ) ; 
+}
+
 int main(int argc, char *argv[]) {
 	QApplication app( argc, argv ) ; 
+
+	signal( SIGALRM, signal ) ; 
 	
 	QGraphicsView view;
 	QGraphicsScene *scene = new QGraphicsScene( -50 , -50 , 1366, 768 , &view ) ; 
@@ -98,11 +112,10 @@ int main(int argc, char *argv[]) {
 	rect->translate( 10, 10 ) ;
 		
 	scene->addText("Ya Ya Ka Wa ii~~~") ; 
-	
-	SuperItem *superItem = new SuperItem() ; 
 	superItem->setFocus( ) ; 
 	scene->addItem( superItem ) ; 
-	view.resize( 1366, 768 ) ; 
+	view.resize( 1366, 768 ) ; 	
+	ualarm( 40000, 0  ) ; 
 	view.show() ; 
 
 
