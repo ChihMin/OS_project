@@ -79,7 +79,7 @@ void SuperItem::paint( QPainter *painter,
 				const QStyleOptionGraphicsItem *option, 
 						QWidget *widget ){
 	QPixmap pixImg("miku.png") ; 
-	painter->drawPixmap( 0 , 0 , 200 , 200  , pixImg ) ; 	
+	painter->drawPixmap( 0 , 0   , pixImg ) ; 	
 }
 
 int main(int argc, char *argv[]) {
@@ -89,22 +89,11 @@ int main(int argc, char *argv[]) {
 	QGraphicsScene *scene = new QGraphicsScene( -50 , -50 , 1366, 768 , &view ) ; 
 	view.setScene( scene ) ; 
 	
-	QGraphicsRectItem *rect = new QGraphicsRectItem( 0, 0, 100, 100 ) ; 
-	scene->addItem( rect ) ; 
-	
-	QGraphicsRectItem *rect2 = new QGraphicsRectItem( 0 , 0, 50, 50 ) ; 
-	scene->addItem( rect2 ) ; 
-	rect2->rotate( 20 ) ; 
-	rect->translate( 10, 10 ) ;
-		
-	scene->addText("Ya Ya Ka Wa ii~~~") ; 
-	
 	SuperItem *superItem = new SuperItem() ; 
 	superItem->setFocus( ) ; 
 	scene->addItem( superItem ) ; 
 	view.resize( 1366, 768 ) ; 
 	view.show() ; 
-
 
 	return app.exec();
 }
