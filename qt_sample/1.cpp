@@ -9,7 +9,7 @@
 
 void MyWidget::setPosition(){
 	repaint() ;
-	pos++ ; 
+	pos = pos + 4 ; 
 	emit timeout() ; 
 }
 
@@ -33,7 +33,7 @@ MyWidget::MyWidget( QWidget *parent  ) : QWidget( parent ){
 	
 	timer = new QTimer() ; 
 	connect( timer, SIGNAL( timeout() ), this, SLOT( setPosition() ) ) ;
-	timer->start( 6 ) ;     
+	timer->start( 7 ) ;     
 }
 
 int main( int argc , char **argv ){
