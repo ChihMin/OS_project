@@ -1,99 +1,46 @@
 #include <QApplication>
-#include <QLabel>
-#include <QFont>
 #include <QPushButton>
-#include <QSlider>
-#include <QLCDNumber>
+#include <QFont>
 #include <QWidget>
+#include <QObject>
 #include <QPainter>
 #include <QBitmap>
-#include <QtGui> 
-#include <QtCore>
-#include <QGraphicsItem>
-#include <signal.h>
-#include <sys/times.h>
+#include "MyWidget.h"
 
+void MyWidget::setPosition(){
+	repaint() ;
+	pos++ ; 
+	emit timeout() ; 
+}
 
-class SuperItem : public QGraphicsItem{
+void MyWidget::paintEvent( QPaintEvent *event ){
+	QPixmap pixImg( "miku.png" ) ; 
+	QPainter painter( this ) ; 
+	painter.drawPixmap( pos, 0  , pixImg ) ; 
+/*	
+	QVBoxLayout *layout = new QVBoxLayout( ) ;
+	layout->addWidget( quit ) ;
+	setLayout( layout ) ;
+*/
+}
 
-public:
-	SuperItem( QGraphicsItem *parent = NULL ) ; 	
-		
-protected:
-	void paint( QPainter *painter, 
-				const QStyleOptionGraphicsItem *option, 
-				QWidget *widget ) ; 			
+MyWidget::MyWidget( QWidget *parent  ) : QWidget( parent ){
+	setFixedSize( 1366, 768 ) ; 
+	pos = 0 ; 
+	quit = new QPushButton( tr("Quit") , this ) ;
+	quit->setGeometry( 100, 100, 200 ,200 ) ; 
+	quit->setFont( QFont("Times", 18, QFont::Bold  ) );
 	
-	QRectF boundingRect() const ; 
-	virtual void keyPressEvent( QKeyEvent *event ) ;
-} ; 
-
-SuperItem::SuperItem( QGraphicsItem *parent ) : QGraphicsItem( parent ){
-	setFlag( QGraphicsItem::ItemIsFocusable ) ; 
-}
-void SuperItem::keyPressEvent( QKeyEvent *event ){
-	switch( event->key() ){
-		case Qt::Key_D :{
-			moveBy( 100, 0 ) ;
-			break;  
-		}
-		case Qt::Key_A :{ 
-			moveBy( -100, 0 ) ;  
-			break ; 
-		}
-		case Qt::Key_W : {
-			moveBy( 0 , -100 ) ; 
-			break ; 
-		}
-		case Qt::Key_S : {
-			moveBy( 0 , 100 ) ; 
-			break ; 
-		
-		}
-		case Qt::Key_Right : {
-			moveBy( 100, 0 ) ; 
-			break ;
-		}
-		case Qt::Key_Left : {
-			moveBy( -100 , 0 ) ; 
-			break; 
-		}
-		case Qt::Key_Up:{
-			moveBy( 0, -100 ) ; 
-			break ; 
-		}
-		case Qt::Key_Down : {
-			moveBy( 0 , 100 ) ; 
-			break ; 
-		}
-	}
-	update() ; 	
+	timer = new QTimer() ; 
+	connect( timer, SIGNAL( timeout() ), this, SLOT( setPosition() ) ) ;
+	timer->start( 6 ) ;     
 }
 
- 
-QRectF SuperItem::boundingRect() const{	
-	return QRectF( 0, 0 ,400, 400 ) ;  
-}
+int main( int argc , char **argv ){
 
-void SuperItem::paint( QPainter *painter, 
-				const QStyleOptionGraphicsItem *option, 
-						QWidget *widget ){
-	QPixmap pixImg("miku.png") ; 
-	painter->drawPixmap( 0 , 0   , pixImg ) ; 	
-}
+	QApplication app( argc , argv ) ; 
 
-int main(int argc, char *argv[]) {
-	QApplication app( argc, argv ) ; 
-	
-	QGraphicsView view;
-	QGraphicsScene *scene = new QGraphicsScene( -50 , -50 , 1366, 768 , &view ) ; 
-	view.setScene( scene ) ; 
-	
-	SuperItem *superItem = new SuperItem() ; 
-	superItem->setFocus( ) ; 
-	scene->addItem( superItem ) ; 
-	view.resize( 1366, 768 ) ; 
-	view.show() ; 
-
-	return app.exec();
-}
+	MyWidget window ; 
+	window.show() ; 	
+	return app.exec(); 
+}	
