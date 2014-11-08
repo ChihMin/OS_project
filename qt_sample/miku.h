@@ -13,24 +13,27 @@
 #include <QPainter>
 #include <QBitmap>
 #include <QKeyEvent>
+#include "MyWidget.h"
 
-class MyWidget : public QWidget{
+class Miku : public QWidget{
 
 Q_OBJECT 
 public : 	
-	MyWidget( QWidget *parent = 0 ) ; 	
+	Miku( QWidget *parent = 0 ) ; 	
 public slots :
 	void setPosition() ; 
 signals :
 	void clicked() ; 
-	void timeout() ; 
+	void timeout() ;
 
 protected : 
 	void paintEvent( QPaintEvent* ) ; 
 
+	void keyPressEvent( QKeyEvent* ) ;  
 private : 
-	int pos ; 
-	QTimer *timer ; 
+	int x , y ;  
+	QTimer *timer ;
+	MyWidget *widget ;  
 } ; 
 
 #endif

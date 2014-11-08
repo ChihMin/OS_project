@@ -27,7 +27,6 @@ signals :
 
 protected : 
 	void paintEvent( QPaintEvent* ) ; 
-
 private : 
 	int pos ; 
 	QTimer *timer ; 
