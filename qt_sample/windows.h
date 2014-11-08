@@ -12,9 +12,16 @@ class Windows : public QWidget{
 public : 
 	Windows( QWidget *parent = 0 ) ;
 	MyWidget *woods[20] ;
-	Miku *miku ; 
+	Miku *miku ;
+	int getMikuX() ; 
+	int getMikuY() ;
+	int getLogCount() ;   
 protected : 
 	void keyPressEvent( QKeyEvent* ) ; 
+
+private :
+	int logCount ; 
+
 
 } ; 
 

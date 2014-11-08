@@ -21,6 +21,8 @@ Q_OBJECT
 public : 	
 	Miku( QWidget *parent = 0 ) ; 	
 	void keyPressEvent( QKeyEvent* ) ;  
+	int getX() ; 
+	int getY() ; 
 public slots :
 	void setPosition() ; 
 signals :

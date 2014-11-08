@@ -12,6 +12,14 @@ void Miku::paintEvent( QPaintEvent *event ){
 	painter.drawPixmap( x, y  , pixImg ) ; 
 }
 
+int Miku::getX(){
+	return x ; 
+}
+
+int Miku::getY(){
+	return y ; 
+}	
+
 void Miku::keyPressEvent( QKeyEvent *event ){
 	char c = char( event->key() ) ;
 	int dis = 100 ; 
