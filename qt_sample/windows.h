@@ -4,7 +4,6 @@
 #include <QObject>
 #include "Miku.h"
 #include "MyWidget.h"
-#include <QKeyEvent>
 
 class Windows : public QWidget{
 
