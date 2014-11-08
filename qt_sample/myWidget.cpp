@@ -2,20 +2,32 @@
 
 void MyWidget::setPosition(){
 	repaint() ;
-	pos = pos + 4 ; 
+	x = x + 4 ;
+	if( x >= 1366 ) x = -400 ;  
 	emit timeout() ; 
 }
 
 void MyWidget::paintEvent( QPaintEvent *event ){
-	QPixmap pixImg( "miku.png" ) ; 
+	QPixmap pixImg( "onion.png" ) ; 
 	QPainter painter( this ) ; 
-	painter.drawPixmap( pos, 0  , pixImg ) ; 
+	painter.drawPixmap( x , y , pixImg ) ; 
 }
 
-MyWidget::MyWidget( QWidget *parent  ) : QWidget( parent ){
+MyWidget::MyWidget( QWidget *parent ) : QWidget( parent ){
 	setFixedSize( 1366, 768 ) ;	 	
-	pos = 0 ; 
+	x = y = 0 ;
+	
 	timer = new QTimer() ; 
 	connect( timer, SIGNAL( timeout() ), this, SLOT( setPosition() ) ) ;
 	timer->start( 7 ) ;     
 }
+
+MyWidget::MyWidget( int _x, int _y , QWidget *parent  ) : QWidget( parent ){
+	setFixedSize( 1366, 768 ) ;	 	
+	x = _x , y = _y ; 
+	
+	timer = new QTimer() ; 
+	connect( timer, SIGNAL( timeout() ), this, SLOT( setPosition() ) ) ;
+	timer->start( 7 ) ;     
+}
+

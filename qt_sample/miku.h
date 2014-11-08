@@ -20,6 +20,7 @@ class Miku : public QWidget{
 Q_OBJECT 
 public : 	
 	Miku( QWidget *parent = 0 ) ; 	
+	void keyPressEvent( QKeyEvent* ) ;  
 public slots :
 	void setPosition() ; 
 signals :
@@ -29,11 +30,10 @@ signals :
 protected : 
 	void paintEvent( QPaintEvent* ) ; 
 
-	void keyPressEvent( QKeyEvent* ) ;  
 private : 
 	int x , y ;  
 	QTimer *timer ;
-	MyWidget *widget ;  
+	MyWidget *woods[20] ;  
 } ; 
 
 #endif

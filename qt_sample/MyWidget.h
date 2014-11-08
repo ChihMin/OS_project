@@ -17,7 +17,8 @@ class MyWidget : public QWidget{
 
 Q_OBJECT 
 public : 	
-	MyWidget( QWidget *parent = 0 ) ; 	
+	MyWidget(  QWidget *parent = 0 ) ; 	
+	MyWidget(  int _x , int _y , QWidget *parent = 0 ) ; 	
 	QPushButton *quit ;
 public slots :
 	void setPosition() ; 
@@ -28,8 +29,8 @@ signals :
 protected : 
 	void paintEvent( QPaintEvent* ) ; 
 private : 
-	int pos ; 
-	QTimer *timer ; 
+	int x , y  ; 
+	QTimer *timer ;
 } ; 
 
 #endif

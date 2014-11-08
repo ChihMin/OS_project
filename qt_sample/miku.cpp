@@ -14,14 +14,16 @@ void Miku::paintEvent( QPaintEvent *event ){
 
 void Miku::keyPressEvent( QKeyEvent *event ){
 	char c = char( event->key() ) ;
+	int dis = 100 ; 
 	printf("%c ",c) ;  
 	if( c < 95 ) c += 32 ; 
 	
-	if( c == 'w' ) y -= 50 ; 
-	else if( c == 'd' ) x += 50; 
-	else if( c == 'a' )	x -= 50 ; 
-	else if( c == 's' ) y += 50 ; 
+	if( c == 'w' ) y -= dis ; 
+	else if( c == 'd' ) x += dis; 
+	else if( c == 'a' )	x -= dis ; 
+	else if( c == 's' ) y += dis ; 
 	else if( c == 'q' ){
+		QCoreApplication::exit() ;  
 	}
 	 
 	repaint() ; 
@@ -30,9 +32,15 @@ void Miku::keyPressEvent( QKeyEvent *event ){
 Miku::Miku( QWidget *parent  ) : QWidget( parent ){
 	setFixedSize( 1366, 768 ) ; 
 	x = 0, y = 0 ;
-	
-	widget = new MyWidget( this ) ; 	
+
+	repaint() ; 
+/*	
+	for(int i = 0; i < 5 ; ++i ){
+		woods[i] = new MyWidget( 0, i * 100 , this ) ; 
+	}
+*/	
+	//widget = new MyWidget( this ) ; 	
 	timer = new QTimer() ; 
 	connect( timer, SIGNAL( timeout() ), this, SLOT( setPosition() ) ) ;
-	timer->start( 10 ) ;     
+	//timer->start( 10 ) ;     
 }
