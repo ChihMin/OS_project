@@ -22,7 +22,9 @@ public :
 	Miku( QWidget *parent = 0 ) ; 	
 	void keyPressEvent( QKeyEvent* ) ;  
 	int getX() ; 
-	int getY() ; 
+	int getY() ;
+	void changeMiku( int _x , int _y ) ;
+	void setSpeed( int _speed ) ; 
 public slots :
 	void setPosition() ; 
 signals :
@@ -33,7 +35,7 @@ protected :
 	void paintEvent( QPaintEvent* ) ; 
 
 private : 
-	int x , y ;  
+	int x , y , speed ;  
 	QTimer *timer ;
 	MyWidget *woods[20] ;  
 } ; 

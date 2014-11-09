@@ -1,8 +1,17 @@
 #include "Miku.h"
 
+void Miku::setSpeed( int _speed ){
+	speed = _speed ; 
+}
+
+void Miku::changeMiku( int _x , int _y ){
+	x = _x, y = _y ; 
+	repaint() ; 
+}
+
 void Miku::setPosition(){
 	repaint() ;
-	x = x + 4 ; 
+	x = x + speed  ; 
 	emit timeout() ; 
 }
 
@@ -40,15 +49,10 @@ void Miku::keyPressEvent( QKeyEvent *event ){
 Miku::Miku( QWidget *parent  ) : QWidget( parent ){
 	setFixedSize( 1366, 768 ) ; 
 	x = 0, y = 0 ;
-
+	speed = 0 ;
 	repaint() ; 
-/*	
-	for(int i = 0; i < 5 ; ++i ){
-		woods[i] = new MyWidget( 0, i * 100 , this ) ; 
-	}
-*/	
-	//widget = new MyWidget( this ) ; 	
+
 	timer = new QTimer() ; 
 	connect( timer, SIGNAL( timeout() ), this, SLOT( setPosition() ) ) ;
-	//timer->start( 10 ) ;     
+	timer->start( 20 ) ;     
 }

@@ -13,14 +13,19 @@
 #include "windows.h"
 
 Windows *win ; 
+bool isFinished ; 
 
 void *liveDetect( void *t ){
-	while( 1 ){
+	while( !isFinished ){
 		int x , y  ; 
 		x = win->getMikuX() ; 
-		y = win->getMikuY() ; 
-		printf("%d %d\n",x , y ) ; 
+		y = win->getMikuY() ;  
+		if( win->isInRange( x , y ) ){
+			win->setMikuSpeed( 10 ) ;  
+		}
+		else	win->setMikuSpeed( 0 ) ; 
 	}
+	QCoreApplication::exit() ; 
 	pthread_exit( NULL ) ; 
 }
 
