@@ -2,6 +2,14 @@
 #include <ctime>
 #include <cstdlib>
 
+void MyWidget::setSpeed( int _speed ){
+	speed = _speed ; 
+}
+
+int MyWidget::getSpeed(){
+	return speed ; 
+}
+
 int MyWidget::getX(){
 	return x; 
 }

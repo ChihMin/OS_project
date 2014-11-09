@@ -4,6 +4,8 @@
 #include <QObject>
 #include "Miku.h"
 #include "MyWidget.h"
+#include <QSlider>
+#include <QPushButton>
 
 class Windows : public QWidget{
 
@@ -16,18 +18,28 @@ public :
 	int getMikuX() ; 
 	int getMikuY() ;
 	int getWoodX( int pos ) ; 
-	int getWoodY( int pos ) ;  
+	int getWoodY( int pos ) ;
+	int getWoodSpeed( int pos ) ;   
 	int getLogCount() ;   
-	bool isInRange( int x , int y ) ;
+	int isInRange( int x , int y ) ;
 	void changeMiku( int x , int y ) ;  
 	void setMikuSpeed( int speed ) ; 	
+
+public slots: 
+	void speedChanges( int ) ; 
+
+signals : 
+	void valueChanged( int ) ; 
+
 protected : 
 	void keyPressEvent( QKeyEvent* ) ; 
 
 private :
 	int logCount ; 
 	int mikuSpeed ; 
-	int length[20] ; 
+	int length[20] ;
+	int speed ; 
+	QSlider *slider ;  
 } ; 
 
 #endif

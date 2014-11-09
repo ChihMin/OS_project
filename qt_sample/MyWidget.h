@@ -22,11 +22,13 @@ public :
 	QPushButton *quit ;
 	int getX() ; 
 	int getY() ; 
+	int getSpeed() ; 
+	void setSpeed( int _speed ) ;  
 public slots :
 	void setPosition() ; 
 signals :
 	void clicked() ; 
-	void timeout() ; 
+	void timeout() ;
 
 protected : 
 	void paintEvent( QPaintEvent* ) ; 

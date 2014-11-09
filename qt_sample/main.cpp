@@ -17,11 +17,14 @@ bool isFinished ;
 
 void *liveDetect( void *t ){
 	while( !isFinished ){
-		int x , y  ; 
+		int x , y  , speed ;
 		x = win->getMikuX() ; 
 		y = win->getMikuY() ;  
-		if( win->isInRange( x , y ) ){
-			win->setMikuSpeed( 10 ) ;  
+		
+		int pos = win->isInRange( x , y ) ;
+		if( pos ){	
+			speed = win->getWoodSpeed( pos ) ;  
+			win->setMikuSpeed( speed ) ;  
 		}
 		else{	
 			if( y + 200 > 500 )  win->setMikuSpeed( 0 ) ; 
@@ -50,7 +53,7 @@ int main( int argc , char **argv ){
 	pthread_t thread ; 
 	win = new Windows() ; 
 	pthread_create( &thread, NULL , liveDetect, NULL ) ;   
-	
+		
 	win->show() ;   	
 	return app.exec(); 
 }	
