@@ -25,14 +25,11 @@ Windows::Windows( QWidget *parent ) : QWidget( parent ) {
 	
 	miku = new Miku( this ) ;  
 	slider = new QSlider( Qt::Horizontal, this ) ;
-	slider->setRange( 10 , 20 ) ; 
+	slider->setRange( 10 , 40 ) ; 
 	slider->setValue( 10 ) ; 
 	slider->setGeometry( 20 , 730 , 400, 30 ) ; 
 	
 	connect(slider , SIGNAL( valueChanged( int ) ), this, SLOT( speedChanges( int ) ) ); 
-	
-	
-	 
 }
 
 void Windows::speedChanges( int n_speed ){
