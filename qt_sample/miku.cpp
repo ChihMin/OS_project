@@ -11,7 +11,8 @@ void Miku::changeMiku( int _x , int _y ){
 
 void Miku::setPosition(){
 	repaint() ;
-	x = x + speed  ; 
+	x = x + speed  ;
+	if( x >= 1367 )	x = -265;  
 	emit timeout() ; 
 }
 
@@ -48,7 +49,7 @@ void Miku::keyPressEvent( QKeyEvent *event ){
 
 Miku::Miku( QWidget *parent  ) : QWidget( parent ){
 	setFixedSize( 1366, 768 ) ; 
-	x = 0, y = 0 ;
+	x = 500 , y = 400  ;
 	speed = 0 ;
 	repaint() ; 
 

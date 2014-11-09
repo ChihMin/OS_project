@@ -13,10 +13,17 @@ Windows::Windows( QWidget *parent ) : QWidget( parent ) {
 	srand( time( 0 )  )  ; 
 	for(int i = 1; i <= logCount; ++i )	
 			length[i] = rand() % 5 + 4 ;  
-
+	
 	for(int i = 1;i <= logCount; ++i ){	
 		woods[i] = new MyWidget( 0 , i * 100 , length[i],  this ) ; 
 	}
+	
+	logCount = 7 ; 
+	for(int i = 6 ; i <= logCount; ++i )
+		length[i] = rand() % 10 + 4 ; 
+	for( int i = 6; i <= logCount; ++i)
+		woods[i] = new MyWidget( length[i-5] * 100 + 100 , ( i - 5 ) * 100 , length[i],  this ) ; 
+	
 	miku = new Miku( this ) ;  
 }
 
@@ -54,16 +61,17 @@ void Windows::setMikuSpeed( int _speed ){
 }
 
 bool Windows::isInRange( int x , int y ){
-	y += 200 ; 
-	int rx = x + 265 ; 
+	y += 200 ;
+	int lx = x + 200 ;  
+	int rx = x + 165 ; 
 	for( int i = 1 ; i <= logCount; ++i) {
 		int nx = woods[i]->getX() ; 
 		int ny = woods[i]->getY() ; 
-		printf("( %d , %d ) ", nx, ny ) ; 	
+	//	printf("( %d , %d ) ", nx, ny ) ; 	
 		if( y == ny ){
-			if( x >= nx && x <= nx + 100 * length[i] )	return true ;
+			if( lx >= nx && lx <= nx + 100 * length[i] )	return true ;
 			else if( rx >= nx && rx <= nx + 100 * length[i] )	return true ; 
 		 }
-	}printf(" miku : ( %d ,%d )\n", x, y ) ; 
+	}//printf(" miku : ( %d ,%d )\n", x, y ) ; 
 	return false ; 
 }

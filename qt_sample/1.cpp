@@ -23,7 +23,21 @@ void *liveDetect( void *t ){
 		if( win->isInRange( x , y ) ){
 			win->setMikuSpeed( 10 ) ;  
 		}
-		else	win->setMikuSpeed( 0 ) ; 
+		else{	
+			if( y + 200 > 500 )  win->setMikuSpeed( 0 ) ; 
+			else if( y + 200 < 100 ){
+				printf("\n=================\n");
+				printf("You Win!!!\n"); 
+				printf("==================\n");
+				isFinished = true ; 
+			}
+			else{
+				printf("\n=================\n");
+				printf("You Lose!!!\n"); 
+				isFinished = true ; 
+				printf("==================\n");
+			}
+		}
 	}
 	QCoreApplication::exit() ; 
 	pthread_exit( NULL ) ; 
