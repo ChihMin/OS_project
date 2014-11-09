@@ -78,7 +78,7 @@ void *wood_move( void *t ){
 		int i , j ; 
 		for(j = 0; j < COLUMN - 1; ++j ) map[my_id][j] = ' ' ;
 		map[my_id][COLUMN-1] = 0 ;    	
-		for(i = 0, j = woods[my_id]; i < 7; ++i, ++j){
+		for(i = 0, j = woods[my_id]; i < 15; ++i, ++j){
 			map[my_id][ j % (COLUMN - 1) ] = '=' ; 
 		}
 		 
