@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <ctime> 
+#include <QMessageBox>
 
 Windows::Windows( QWidget *parent ) : QWidget( parent ) {
 	
@@ -31,6 +32,19 @@ Windows::Windows( QWidget *parent ) : QWidget( parent ) {
 	
 	connect(slider , SIGNAL( valueChanged( int ) ), this, SLOT( speedChanges( int ) ) ); 
 }
+/*
+static void showExitStatus( int type ){
+	if( type == 1 ){
+		QMessageBox::warning( this, "Warning",
+		            "Oh! <b>You Win!!!!</b>",
+					            QMessageBox::Yes, QMessageBox::Yes);
+	}
+	else{
+		QMessageBox::warning( this, "Warning",
+		            "Oh! <b>You Lost!!!!</b>",
+					            QMessageBox::Yes, QMessageBox::Yes);
+	}
+}*/
 
 void Windows::speedChanges( int n_speed ){
 //	if( n_speed != speed ){

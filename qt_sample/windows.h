@@ -24,6 +24,7 @@ public :
 	int isInRange( int x , int y ) ;
 	void changeMiku( int x , int y ) ;  
 	void setMikuSpeed( int speed ) ; 	
+	//static void showExitStatus( int type ) ; 
 
 public slots: 
 	void speedChanges( int ) ; 
