@@ -16,7 +16,6 @@ Windows::Windows( QWidget *parent ) : QWidget( parent ) {
 	speed = 10 ; 
 
 	srand( time( 0 )  )  ; 
-	
 	for(int i = 1; i <= logCount; ++i )	
 			length[i] = rand() % 5 + 4 ;  
 	
@@ -32,28 +31,21 @@ Windows::Windows( QWidget *parent ) : QWidget( parent ) {
 	
 	connect(slider , SIGNAL( valueChanged( int ) ), this, SLOT( speedChanges( int ) ) ); 
 }
-/*
-static void showExitStatus( int type ){
-	if( type == 1 ){
-		QMessageBox::warning( this, "Warning",
-		            "Oh! <b>You Win!!!!</b>",
-					            QMessageBox::Yes, QMessageBox::Yes);
-	}
-	else{
-		QMessageBox::warning( this, "Warning",
-		            "Oh! <b>You Lost!!!!</b>",
-					            QMessageBox::Yes, QMessageBox::Yes);
-	}
-}*/
+
+void Windows::paintEvent( QPaintEvent *event ){	
+	QPixmap pixImg("background.jpg"); 
+	QPainter painter( this ) ; 
+	painter.drawPixmap( 0, 0, pixImg )  ; 
+}
 
 void Windows::speedChanges( int n_speed ){
-//	if( n_speed != speed ){
+	if( n_speed != speed ){
 		speed = n_speed ;
 		for( int i = 1; i <= logCount; ++i ){
 			woods[i]->setSpeed( n_speed ) ;  
 		}
 		emit valueChanged( n_speed ) ;  
-//	}
+	}
 }
 
 int Windows::getLogCount(){

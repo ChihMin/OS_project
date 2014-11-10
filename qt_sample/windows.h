@@ -34,13 +34,13 @@ signals :
 
 protected : 
 	void keyPressEvent( QKeyEvent* ) ; 
-
+	void paintEvent( QPaintEvent* ) ; 
 private :
 	int logCount ; 
 	int mikuSpeed ; 
 	int length[20] ;
 	int speed ; 
-	QSlider *slider ;  
+	QSlider *slider ; 
 } ; 
 
 #endif
