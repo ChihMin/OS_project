@@ -5,9 +5,12 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+#define PAGESIZE 32 
+#define PHYSICAL_MEM_SIZE 32768
 
 typedef uint32_t u32 ;
 typedef unsigned char uchar ;  
+extern __shared__ u32 pt[] ;
 
 __device__ u32 paging( uchar *buffer, u32 frame_num, u32 offset ) ;
 
