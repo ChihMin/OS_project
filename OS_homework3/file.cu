@@ -14,11 +14,17 @@ int load_binaryFile( const char *DATAFILE, uchar *input, int STORAGE_SIZE ){
 	uchar in ; 
 	FILE *R = fopen( DATAFILE, "rb" ) ; 
 	
-	while( fread( &in, sizeof( uchar ), 1, R ) )	input[size++] = in ; 
-	return size ;   
+	while( fread( &in, sizeof( uchar ), 1, R ) )	
+		input[size++] = in ; 
+	fclose( R )  ;
+	
+	return size ;  
 }
 
 void write_binaryFile( const char *OUTFILE, uchar *results, int input_size ){
-
-
+	FILE *W = fopen( OUTFILE, "wb" ) ; 
+	for(int i = 0; i < input_size; ++i ){
+		fwrite( &results[i], sizeof( uchar ), 1, W ) ;
+	}
+	fclose( W ) ; 
 }
