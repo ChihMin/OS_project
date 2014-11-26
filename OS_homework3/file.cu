@@ -10,7 +10,12 @@ __device__ void init_pageTable( int pt_entries ){
 }
 
 int load_binaryFile( const char *DATAFILE, uchar *input, int STORAGE_SIZE ){
-	return 0 ; 
+	int size = 0 ; 
+	uchar in ; 
+	FILE *R = fopen( DATAFILE, "rb" ) ; 
+	
+	while( fread( &in, sizeof( uchar ), 1, R ) )	input[size++] = in ; 
+	return size ;   
 }
 
 void write_binaryFile( const char *OUTFILE, uchar *results, int input_size ){

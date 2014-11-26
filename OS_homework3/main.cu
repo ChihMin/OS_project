@@ -30,7 +30,7 @@ __device__ __managed__ uchar results[STORAGE_SIZE] ;
 __device__ __managed__ uchar input[STORAGE_SIZE] ; 
 
 //page table
-//extern __shared__ u32 pt[] ;
+extern __shared__ u32 pt[] ;
 
 __device__ uchar Gread( uchar *buffer, u32 addr ){
 	u32 frame_num = addr/PAGESIZE ; 
