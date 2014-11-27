@@ -7,7 +7,7 @@ __device__ u32 paging( uchar *buffer, u32 frame_num, u32 offset ){
 
 __device__ void init_pageTable( int pt_entries ){
 	for(int i = 0; i < pt_entries; ++i ){
-		pt[i] = i ; 
+		pt[i] = 1 ; 
 	}
 }
 

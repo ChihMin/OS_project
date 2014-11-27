@@ -8,7 +8,7 @@
 //32 KB in shared memory 
 #define PHYSICAL_MEM_SIZE 32768
 //128 KB in global memory
-#define STORAGE_SIZE 13107
+#define STORAGE_SIZE 131071
 
 #define DATAFILE "./data.bin"
 #define OUTFILE "./snapshot.bin"
@@ -33,8 +33,8 @@ __device__ __managed__ uchar input[STORAGE_SIZE] ;
 extern __shared__ u32 pt[] ;
 
 __device__ uchar Gread( uchar *buffer, u32 addr ){
-	u32 frame_num = addr/PAGESIZE ; 
-	u32 offset = addr % PAGESIZE ; 
+	u32 frame_num = addr/PAGESIZE ; // frame num is virtual page number 
+	u32 offset = addr % PAGESIZE ; // offset is the distance from begining of page
 	
 	addr = paging(buffer, frame_num, offset ) ;
 	return buffer[addr] ; 	
@@ -62,6 +62,11 @@ __global__ void mykernel( int input_size ){
 	
 	//befor first Gwrite or Gread 
 	init_pageTable( pt_entries ) ; 
+
+	printf("pt_entries = %d\n", pt_entries ) ; 
+	for(int i = 0; i < 512; ++i )
+		printf("%d -> %d\n", i , pt[i] ) ; 
+
 	
 	//##Gwrite / Gread code section start###
 	for(int i = 0; i < input_size; ++i )
@@ -77,12 +82,13 @@ __global__ void mykernel( int input_size ){
 
 int main(){
 	int input_size = load_binaryFile( DATAFILE, input, STORAGE_SIZE ) ;
+	printf("size = %d\n", input_size ) ; 
 	
 	mykernel<<<1, 1, 16384>>>(input_size)  ;
 	cudaDeviceSynchronize() ; 
 	cudaDeviceReset() ;
-	
+
 	write_binaryFile(OUTFILE, results, input_size ) ; 
-	
+
 	printf("pagefault tims = %d\n", PAGEFAULT ) ;  
 }
