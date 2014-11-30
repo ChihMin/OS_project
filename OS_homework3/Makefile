@@ -8,6 +8,6 @@ file.o:file.cu
 	nvcc -arch=sm_30 file.cu -rdc=true -c -g -G
 
 clean:
-	rm vm file.o main.o
+	rm vm file.o main.o snapshot.bin
 	
 

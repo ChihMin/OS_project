@@ -63,11 +63,6 @@ __global__ void mykernel( int input_size ){
 	
 	//befor first Gwrite or Gread 
 	init_pageTable( pt_entries ) ; 
-/*	
-	for(int i = 0; i < STORAGE_SIZE; ++i ){
-		printf("%d -> %d\n", i, storage[i] ) ; 
-	}
-*/	
 	//##Gwrite / Gread code section start###
 	for(int i = 0; i < input_size; ++i )
 		Gwrite( data, i , input[i] ) ; 
@@ -81,8 +76,8 @@ __global__ void mykernel( int input_size ){
 }
 
 int main(){
+	//int input_size = load_binaryFile( DATAFILE, input, STORAGE_SIZE ) ;
 	int input_size = load_binaryFile( DATAFILE, input, STORAGE_SIZE ) ;
-	printf("size = %d\n", input_size ) ; 
 	
 	mykernel<<<1, 1, 16384>>>(input_size)  ;
 	cudaDeviceSynchronize() ; 
