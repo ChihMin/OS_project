@@ -8,7 +8,7 @@
 //32 KB in shared memory 
 #define PHYSICAL_MEM_SIZE 32768
 //128 KB in global memory
-#define STORAGE_SIZE 131071
+#define STORAGE_SIZE 131072
 
 #define DATAFILE "./data.bin"
 #define OUTFILE "./snapshot.bin"
@@ -21,6 +21,7 @@ __device__ __managed__ int PAGE_ENTRIES = 0 ;
 //count the pagefault times
 __device__ __managed__ int PAGEFAULT = 0 ; 
 
+__device__ __managed__ int inTime = 0 ; 
 //secondary memory
 __device__ __managed__ uchar storage[STORAGE_SIZE] ;
 
@@ -62,12 +63,11 @@ __global__ void mykernel( int input_size ){
 	
 	//befor first Gwrite or Gread 
 	init_pageTable( pt_entries ) ; 
-
-	printf("pt_entries = %d\n", pt_entries ) ; 
-	for(int i = 0; i < 512; ++i )
-		printf("%d -> %d\n", i , pt[i] ) ; 
-
-	
+/*	
+	for(int i = 0; i < STORAGE_SIZE; ++i ){
+		printf("%d -> %d\n", i, storage[i] ) ; 
+	}
+*/	
 	//##Gwrite / Gread code section start###
 	for(int i = 0; i < input_size; ++i )
 		Gwrite( data, i , input[i] ) ; 

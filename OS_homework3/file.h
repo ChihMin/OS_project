@@ -7,6 +7,7 @@
 
 #define PAGESIZE 32 
 #define PHYSICAL_MEM_SIZE 32768
+#define PT_ENTRIES 1024 
 
 typedef uint32_t u32 ;
 typedef unsigned char uchar ;  
