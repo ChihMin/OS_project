@@ -5,7 +5,6 @@ extern __device__ __managed__ u32 inTime ;
 extern __device__ __managed__ uchar storage[] ; 
 
 __device__ u32 paging( uchar *buffer, u32 frame_num, u32 offset ){
-
 	u32 target ; 
 	int pt_entries = PT_ENTRIES ;
 	/* 
@@ -32,12 +31,12 @@ __device__ u32 paging( uchar *buffer, u32 frame_num, u32 offset ){
 	}
 	
 	for(int i = 0; i < pt_entries; ++i ){
-		if( pt[i] ^ 1 )	{	// If find invalid entry( empty entry )
+		if( (~pt[i]) & 1 )	{	// If find invalid entry( empty entry )
 			PAGEFAULT++ ;	// add PageFault
 			/*
 				update page table
 			*/
-			u32 tmpTime = inTime++ ; 
+			u32 tmpTime = inTime++ ;
 			pt[i] = ( tmpTime << 13 ) | ( frame_num << 1 ) | 1 ; 
 			return i * 32 + offset  ; 
 		}
@@ -74,13 +73,18 @@ __device__ u32 paging( uchar *buffer, u32 frame_num, u32 offset ){
 		storage[i] = buffer[sharedAddress] ;			//swap out 
 		buffer[sharedAddress] = storage[curAddress];	//swap in 
 	}
-	pt[target] = ((inTime++) << 13 ) | ( frame_num << 1 ) | 1 ;
+	int tmpTime = inTime++ ; 
+	pt[target] = ((tmpTime) << 13 ) | ( frame_num << 1 ) | 1 ;
 	return target * 32 + offset ;
 }
 
 __device__ void init_pageTable( int pt_entries ){
 	for(int i = 0; i < pt_entries; ++i ){
 		pt[i] = 0  ; 
+	}
+
+	for(int i = 0; i < STORAGE_SIZING; ++i){
+		storage[i] = 0 ;
 	}
 }
 
