@@ -6,7 +6,7 @@ How to compile ?
 
 2. prepare data.bin for input
 
-3. Execute ./vm
+3. Execute ./mvm
 
 4. After Execution, pagefault = x , x is the number of pagefault,
 

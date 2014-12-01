@@ -78,7 +78,8 @@ __global__ void mykernel( int input_size ){
 int main(){
 	//int input_size = load_binaryFile( DATAFILE, input, STORAGE_SIZE ) ;
 	int input_size = load_binaryFile( DATAFILE, input, STORAGE_SIZE ) ;
-	
+
+	cudaSetDevice( 5 ) ; 	
 	mykernel<<<1, 1, 16384>>>(input_size)  ;
 	cudaDeviceSynchronize() ; 
 	cudaDeviceReset() ;
