@@ -73,6 +73,7 @@ __global__ void mykernel( int input_size ){
 	//the last line of Gwrite/Gread code section should be snapshot ()
 	snapshot( results, data, 0, input_size ) ;  
 	//###Gwrite/Gread code section end### 
+	printf("pagefault tims = %d\n", PAGEFAULT ) ;  
 }
 
 int main(){
@@ -86,5 +87,6 @@ int main(){
 
 	write_binaryFile(OUTFILE, results, input_size ) ; 
 
-	printf("pagefault tims = %d\n", PAGEFAULT ) ;  
+	
+	return 0 ; 
 }
