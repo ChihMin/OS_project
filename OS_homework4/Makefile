@@ -1,5 +1,5 @@
-vm:main.o file.o
-	nvcc -arch=sm_30 main.o file.o -rdc=true -o vm
+fs:main.o file.o
+	nvcc -arch=sm_30 main.o file.o -rdc=true -o fs
 
 debug:main.cu file.cu
 	nvcc -arch=sm_30 main.cu file.cu -rdc=true -g -G -o debug
