@@ -14,7 +14,7 @@
 
 typedef uint32_t u32 ;
 typedef unsigned char uchar ;  
-
+const u32 INF = (u32)1e9 ; 
 
 typedef struct METADATA{
 	int fp ;
@@ -27,6 +27,8 @@ extern __device__ __managed__ uchar *volume ;
 extern __device__ __managed__ Meta *metadata ; 
 
 void init_volume() ; 
+
+__device__ u32 open( const char *fileName, int mode ) ; 
 
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ) ; 
 

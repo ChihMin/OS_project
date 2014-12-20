@@ -1,5 +1,8 @@
 #include "file.h"
 
+extern __device__ __managed__ u32 updated_at; 
+extern __device__ __managed__ u32 file_num;
+
 void init_volume(){
 	for(int i = 0; i < MAX_FILE_SIZE; ++i)
 		volume[i] = 0 ; 
@@ -14,6 +17,20 @@ void init_volume(){
 	}
 }
 
+__device__ u32 open( const char *fileName, int mode ){
+	if( !mode ){
+		// This block is used to deal with write mode 
+		u32 fp = 0;
+		bool isFind = false; 
+		for(int i = 0; i < file_num; ++i){
+			// Find file is whether exist or not
+				 
+		}
+		if( isFind )	return fp ; 
+		return (u32)-1  ; 
+	}
+}
+	
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ){
 	int size = 0 ; 
 	uchar in ; 
