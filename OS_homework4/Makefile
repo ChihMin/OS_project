@@ -11,6 +11,6 @@ file.o:file.cu
 	nvcc -arch=sm_30 file.cu -rdc=true -c
 
 clean:
-	rm vm file.o main.o snapshot.bin a.txt b.txt debug 
+	rm fs file.o main.o snapshot.bin a.txt b.txt debug 
 	
 
