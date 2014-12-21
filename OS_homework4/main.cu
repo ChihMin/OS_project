@@ -52,48 +52,16 @@ const u32 FILE_OPEN_ERROR = (u32)-1 ;
 
 __global__ void mykernel( uchar *input, uchar *output ){
 	//####kernel start####
-	printf("%u\n",FILE_OPEN_ERROR) ; 
-for(int i = 0; i < 1025; ++i ){
-	int tmp ; 
-	if( i < 200 )	tmp = 123 ;
-	else	tmp = i ; 
+	for(int i = 0; i < 10; ++i )
+		volume[i] = 1 ; 
 	
-	int size = 0 ;
-	char s[2000] ; 
-	while( 1 ){
-		s[size++] = (tmp % 10) + '0' ;
-		tmp /= 10;
-		if( tmp == 0 )	break ;  
-	}
-	s[size] = s[size+1] = 0 ;
-	//printf("%s\n",s ) ;
-	
-	u32 fp = open( s, G_WRITE ) ; 
+	u32 fp = open("a.txt\0", G_WRITE ) ; 
+	fp = open("a.txt\0", G_READ ) ; 
 	if( fp == FILE_OPEN_ERROR )
-		printf("%d file open error\n", fp ) ; 	
-	//printf("%d\n",fp); 
-}
-		
-	for(int i = 0; i < 1025; ++i ){
-		int tmp ; 
-		tmp = i ; 
-	
-		int size = 0 ;
-		char s[2000] ; 
-		while( 1 ){
-			s[size++] = (tmp % 10) + '0' ;
-			tmp /= 10;
-			if( tmp == 0 )	break ;  
-		}
-		s[size] = s[size+1] = 0 ;
-		
-		u32 fp = open( s,  G_READ ) ; 
-		if( fp == FILE_OPEN_ERROR )
-			printf("%d file open error\n", i ) ;
-		else
-			printf("%d -> %s\n", i, metadata[fp].fileName) ; 
-	}
-
+		printf("file open error\n") ; 
+	read( output + 1, 10, fp ) ;  
+	for(int i = 0; i < 14; ++i )
+		printf("%d\n",output[i] ) ;
 	//####kernel end####
 }
 

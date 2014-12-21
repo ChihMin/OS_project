@@ -59,6 +59,12 @@ __device__ u32 open( const char *fileName, int mode ){
 	
 	return (u32)-1 ; 
 }
+
+__device__ void read( uchar *output, int size, u32 fp){
+	for(int i = 0, j = metadata[fp].fp ; i < size; ++i, ++j ){
+		output[i] = volume[j] ; 
+	}
+}
 	
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ){
 	int size = 0 ; 

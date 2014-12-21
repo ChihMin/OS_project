@@ -34,6 +34,8 @@ __device__ bool isMatched( const char *A, const char *B ) ;
 
 __device__ u32 open( const char *fileName, int mode ) ; 
 
+__device__ void read( uchar *output, int size, u32 fp ) ; 
+
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ) ; 
 
 void write_binaryFile( const char *OUTFILE, uchar *results, int output_size ) ; 
