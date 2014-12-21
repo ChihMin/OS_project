@@ -41,6 +41,8 @@ __device__ void strcpy( const char *A, char *B ) ;
 __device__ bool isMatched( const char *A, const char *B ) ; 
 __device__ bool sizeCmp( const Meta &A, const Meta &B ) ;
 
+__device__ bool timeCmp( const Meta &A, const Meta &B ) ;
+
 __device__ void sortBySize() ; 
 
 __device__ void sortByTime() ; 
@@ -54,7 +56,9 @@ __device__ u32 write( uchar *input, int size, u32 fp ) ;
 __device__ void gsys( u32 ins, const char *fileName );
 
 // overloading
-__device__ void gsys( u32 ins ) ; 
+__device__ void gsys( u32 ins ) ;
+
+__device__ void debug() ;  
 
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ) ; 
 

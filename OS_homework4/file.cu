@@ -35,6 +35,20 @@ __device__ void strcpy( const char *A, char *B ){
 	} while( A[i++] != '\0' ) ; 
 }
 
+__device__ void debug(){
+	printf("========DEBUG PRINT START=======\n"); 
+	for(int i = 0; i < file_num; ++i ){
+		Meta *cur = &metadata[i] ; 
+		printf("filename : %s\n", cur->fileName ) ;
+		printf("size : %d\n", cur->size ); 
+		printf("time : %d\n", cur->time ); 
+		printf("fp : %d\n", cur->fp ); 
+		printf("\n"); 
+	}
+
+	printf("=========  E  N  D   =========\n"); 
+}
+
 __device__ u32 open( const char *fileName, int mode ){
 	u32 fp = 0;
 	for(int i = 0; i < file_num; ++i){
@@ -64,6 +78,11 @@ __device__ bool sizeCmp( const Meta &A, const Meta &B ){
 	if( A.size != B.size )	
 		return A.size > B.size ;
 	return A.time < B.time ; 
+}
+
+
+__device__ bool timeCmp( const Meta &A, const Meta &B ){
+	return A.time > B.time ; 
 }
 
 __device__ void read( uchar *output, int size, u32 fp){
@@ -98,7 +117,16 @@ __device__ void sortBySize(){
 }
 
 __device__ void sortByTime(){
-
+	for(int i = 0; i < file_num; ++i){
+		for(int j = i + 1; j < file_num; ++j ){
+			if( timeCmp( metadata[j] , metadata[i] ) ){
+				// swapping 
+				Meta tmp = metadata[i] ; 
+				metadata[i] = metadata[j] ; 
+				metadata[j] = tmp ;  			
+			}
+		}
+	}
 }
 
 __device__ void gsys( u32 ins, const char *fileName ){
@@ -121,7 +149,7 @@ __device__ void gsys( u32 ins ){
 		if( ins == LS_S )	
 			printf("%s %d\n", cur->fileName, cur->size ) ;
 		else
-			printf("%d\n", cur->fileName ); 
+			printf("%s\n", cur->fileName ); 
 	}
 
 }

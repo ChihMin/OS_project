@@ -103,16 +103,10 @@ __global__ void mykernel( uchar *input, uchar *output ){
 	printf("status = %d\n",status ) ; 
 	
 	gsys( LS_S ) ; 
+	gsys( LS_D ) ;
 
-	for(int i = 0; i < file_num; ++i ){
-		Meta *cur = &metadata[i] ; 
-		printf("filename : %s\n", cur->fileName ) ;
-		printf("size : %d\n", cur->size ); 
-		printf("time : %d\n", cur->time ); 
-		printf("fp : %d\n", cur->fp ); 
-		printf("\n");
-	}
-	
+	debug() ; 
+		
 	fp = open("a.txt\0", G_READ ) ; 
 	if( fp == FILE_OPEN_ERROR )
 		printf("file open error\n") ; 
