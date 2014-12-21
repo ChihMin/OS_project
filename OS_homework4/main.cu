@@ -147,6 +147,8 @@ __global__ void mykernel( uchar *input, uchar *output ){
 
 	fp = open("t.txt\0", G_WRITE); 
 	write(input + 32, 32, fp );
+
+	freeSpace() ; 
 	
 	fp = open("t.txt\0", G_READ) ;
 	read(output, 32, fp ); 

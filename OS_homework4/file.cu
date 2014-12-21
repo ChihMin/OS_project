@@ -99,6 +99,8 @@ __device__ void read( uchar *output, int size, u32 fp){
 __device__ u32 write( uchar *input, int size, u32 fp){
 	Meta *cur = &metadata[fp] ;
 	
+	if( last_pos + size > MAX_FILE_SIZE )	freeSpace() ; 
+		
 	cur->fp = last_pos ; 
 	cur->time = updated_at++ ; 
 	cur->size = size ;
