@@ -60,6 +60,12 @@ __device__ u32 open( const char *fileName, int mode ){
 	return (u32)-1 ; 
 }
 
+__device__ bool sizeCmp( const Meta &A, const Meta &B ){
+	if( A.size != B.size )	
+		return A.size > B.size ;
+	return A.time < B.time ; 
+}
+
 __device__ void read( uchar *output, int size, u32 fp){
 	for(int i = 0, j = metadata[fp].fp ; i < size; ++i, ++j ){
 		output[i] = volume[j] ; 
@@ -76,6 +82,48 @@ __device__ u32 write( uchar *input, int size, u32 fp){
 	for(int i = 0; i < size; ++i)
 		volume[last_pos++] = input[i] ; 
 	return last_pos ;   	
+}
+
+__device__ void sortBySize(){	
+	for(int i = 0; i < file_num; ++i){
+		for(int j = i + 1; j < file_num; ++j ){
+			if( sizeCmp( metadata[j] , metadata[i] ) ){
+				// swapping 
+				Meta tmp = metadata[i] ; 
+				metadata[i] = metadata[j] ; 
+				metadata[j] = tmp ;  			
+			}
+		}
+	}
+}
+
+__device__ void sortByTime(){
+
+}
+
+__device__ void gsys( u32 ins, const char *fileName ){
+	// Here is used to Remove File 
+	
+}
+
+__device__ void gsys( u32 ins ){
+	if( ins == LS_S ){
+		sortBySize() ; 
+		printf("===sort by file size===\n") ;
+	}
+	else if( ins == LS_D ){
+		sortByTime() ; 	
+		printf("===sort by modified time===\n"); 
+	}
+
+	for(int i = 0; i < file_num; ++i){
+		Meta *cur = &metadata[i]; 
+		if( ins == LS_S )	
+			printf("%s %d\n", cur->fileName, cur->size ) ;
+		else
+			printf("%d\n", cur->fileName ); 
+	}
+
 }
 	
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ){

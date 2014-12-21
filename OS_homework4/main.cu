@@ -24,6 +24,14 @@
 // G_WRITE mode is 1
 #define G_WRITE 1
 
+// RM instruction = 0
+#define RM 0
+
+// list all file by size order 
+#define LS_S 1
+
+// list all file by modified time order
+#define LS_D 2
 
 #define DATAFILE "./data.bin"
 #define OUTFILE "./snapshot.bin"
@@ -75,15 +83,27 @@ __global__ void mykernel( uchar *input, uchar *output ){
 		printf("\n"); 
 	}
 	 
+	
 	fp = open("a.txt\0", G_WRITE ) ;
 	status = write( input, 124, fp ) ;
 	printf("status = %d\n",status ) ; 
 
 	
-	fp = open("b.txt\0", G_WRITE ) ;
-	status = write( input, 456, fp ) ;
+	fp = open("c.txt\0", G_WRITE ) ;
+	status = write( input, 124, fp ) ;
 	printf("status = %d\n",status ) ; 
 	
+	fp = open("a.txt\0", G_WRITE ) ;
+	status = write( input, 124, fp ) ;
+	printf("status = %d\n",status ) ; 
+
+
+	fp = open("b.txt\0", G_WRITE ) ;
+	status = write( input, 999, fp ) ;
+	printf("status = %d\n",status ) ; 
+	
+	gsys( LS_S ) ; 
+
 	for(int i = 0; i < file_num; ++i ){
 		Meta *cur = &metadata[i] ; 
 		printf("filename : %s\n", cur->fileName ) ;
