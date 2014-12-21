@@ -31,10 +31,11 @@ void init_volume() ;
 __device__ void strcpy( const char *A, char *B ) ; 
 
 __device__ bool isMatched( const char *A, const char *B ) ; 
-
 __device__ u32 open( const char *fileName, int mode ) ; 
 
 __device__ void read( uchar *output, int size, u32 fp ) ; 
+
+__device__ u32 write( uchar *input, int size, u32 fp ) ;
 
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ) ; 
 

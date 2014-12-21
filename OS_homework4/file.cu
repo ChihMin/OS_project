@@ -65,6 +65,18 @@ __device__ void read( uchar *output, int size, u32 fp){
 		output[i] = volume[j] ; 
 	}
 }
+
+__device__ u32 write( uchar *input, int size, u32 fp){
+	Meta *cur = &metadata[fp] ;
+	
+	cur->fp = last_pos ; 
+	cur->time = updated_at++ ; 
+	cur->size = size ;
+	
+	for(int i = 0; i < size; ++i)
+		volume[last_pos++] = input[i] ; 
+	return last_pos ;   	
+}
 	
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ){
 	int size = 0 ; 

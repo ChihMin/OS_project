@@ -55,13 +55,48 @@ __global__ void mykernel( uchar *input, uchar *output ){
 	for(int i = 0; i < 10; ++i )
 		volume[i] = 1 ; 
 	
-	u32 fp = open("a.txt\0", G_WRITE ) ; 
+	u32 fp , status ; 
+
+	fp = open("a.txt\0", G_WRITE ) ;
+	status = write( input, 100, fp ) ;
+	printf("status = %d\n",status ) ; 
+
+	
+	fp = open("b.txt\0", G_WRITE ) ;
+	status = write( input, 100, fp ) ;
+	printf("status = %d\n",status ) ; 
+
+	for(int i = 0; i < file_num; ++i ){
+		Meta *cur = &metadata[i] ; 
+		printf("filename : %s\n", cur->fileName ) ;
+		printf("size : %d\n", cur->size ); 
+		printf("time : %d\n", cur->time ); 
+		printf("fp : %d\n", cur->fp ); 
+		printf("\n"); 
+	}
+	 
+	fp = open("a.txt\0", G_WRITE ) ;
+	status = write( input, 124, fp ) ;
+	printf("status = %d\n",status ) ; 
+
+	
+	fp = open("b.txt\0", G_WRITE ) ;
+	status = write( input, 456, fp ) ;
+	printf("status = %d\n",status ) ; 
+	
+	for(int i = 0; i < file_num; ++i ){
+		Meta *cur = &metadata[i] ; 
+		printf("filename : %s\n", cur->fileName ) ;
+		printf("size : %d\n", cur->size ); 
+		printf("time : %d\n", cur->time ); 
+		printf("fp : %d\n", cur->fp ); 
+		printf("\n");
+	}
+	
 	fp = open("a.txt\0", G_READ ) ; 
 	if( fp == FILE_OPEN_ERROR )
 		printf("file open error\n") ; 
-	read( output + 1, 10, fp ) ;  
-	for(int i = 0; i < 14; ++i )
-		printf("%d\n",output[i] ) ;
+	read( output, 100, fp ) ;  
 	//####kernel end####
 }
 
