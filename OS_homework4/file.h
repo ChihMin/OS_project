@@ -43,9 +43,13 @@ __device__ bool sizeCmp( const Meta &A, const Meta &B ) ;
 
 __device__ bool timeCmp( const Meta &A, const Meta &B ) ;
 
+__device__ bool filePointerCmp( const Meta &A, const Meta &B );
+
 __device__ void sortBySize() ; 
 
 __device__ void sortByTime() ; 
+
+__device__ void sortByFilePointer() ; 
 
 __device__ u32 open( const char *fileName, int mode ) ; 
 
@@ -57,6 +61,8 @@ __device__ void gsys( u32 ins, const char *fileName );
 
 // overloading
 __device__ void gsys( u32 ins ) ;
+
+__device__ void freeSpace() ; 
 
 __device__ void debug() ;  
 

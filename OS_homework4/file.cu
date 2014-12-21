@@ -85,6 +85,11 @@ __device__ bool timeCmp( const Meta &A, const Meta &B ){
 	return A.time > B.time ; 
 }
 
+__device__ bool filePointerCmp( const Meta &A, const Meta &B ){
+	return A.fp > B.fp ; 
+
+}
+
 __device__ void read( uchar *output, int size, u32 fp){
 	for(int i = 0, j = metadata[fp].fp ; i < size; ++i, ++j ){
 		output[i] = volume[j] ; 
@@ -129,6 +134,19 @@ __device__ void sortByTime(){
 	}
 }
 
+__device__ void sortByFilePointer(){
+	for(int i = 0; i < file_num; ++i){
+		for(int j = i + 1; j < file_num; ++j ){
+			if( filePointerCmp( metadata[i] , metadata[j] ) ){
+				// swapping 
+				Meta tmp = metadata[i] ; 
+				metadata[i] = metadata[j] ; 
+				metadata[j] = tmp ;  			
+			}
+		}
+	}
+}
+
 __device__ void gsys( u32 ins, const char *fileName ){
 	// Here is used to Remove File 
 	u32 tar ; 
@@ -161,6 +179,20 @@ __device__ void gsys( u32 ins ){
 			printf("%s\n", cur->fileName ); 
 	}
 
+}
+
+__device__ void freeSpace(){
+	
+	sortByFilePointer() ;
+	last_pos = 0 ; 
+	for(int i = 0; i < file_num; ++i){
+		int fp = metadata[i].fp ;
+		metadata[i].fp = last_pos ;	// update fp    
+		u32 size = metadata[i].size ; 
+		for(int j = 0; j < size; ++j){
+			volume[last_pos++] =  volume[fp++] ; 
+		}
+	}
 }
 	
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ){

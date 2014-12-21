@@ -60,6 +60,7 @@ const u32 FILE_OPEN_ERROR = (u32)-1 ;
 
 __global__ void mykernel( uchar *input, uchar *output ){
 	//####kernel start####
+/*
 	for(int i = 0; i < 10; ++i )
 		volume[i] = 1 ; 
 	
@@ -108,16 +109,60 @@ __global__ void mykernel( uchar *input, uchar *output ){
 	debug() ; 
 	
 	gsys( RM, "b.txt\0" ) ; 
-	
-	
 	gsys( LS_S ) ; 
+
+	
+	fp = open("c.txt\0", G_WRITE ) ;
+	status = write( input, 999, fp ) ;
+	printf("status = %d\n",status ) ; 
+
+	fp = open("d.txt\0", G_WRITE ) ;
+	status = write( input, 999, fp ) ;
+	printf("status = %d\n",status ) ; 
+	
+	fp = open("e.txt\0", G_WRITE ) ;
+	status = write( input, 999, fp ) ;
+	printf("status = %d\n",status ) ; 
+	
+	gsys( RM, "c.txt\0" ); 
+
 	debug() ; 
 	gsys( LS_D ) ;
+
+	freeSpace() ; 
+	debug() ; 
 		
 	fp = open("a.txt\0", G_READ ) ; 
 	if( fp == FILE_OPEN_ERROR )
 		printf("file open error\n") ; 
 	read( output, 100, fp ) ;  
+
+*/
+
+	u32 fp = open("t.txt\0", G_WRITE ) ;
+	write(input, 64, fp ) ;
+	
+	fp = open("b.txt\0", G_WRITE ) ;
+	write(input + 32, 32, fp ) ;
+
+	fp = open("t.txt\0", G_WRITE); 
+	write(input + 32, 32, fp );
+	
+	fp = open("t.txt\0", G_READ) ;
+	read(output, 32, fp ); 
+
+	gsys(LS_D);
+	gsys(LS_S);
+
+	fp = open("b.txt\0", G_WRITE );
+	write( input + 64, 12, fp );
+	gsys(LS_S);
+	gsys(LS_D);
+
+	gsys(RM, "t.txt\0");
+	gsys(LS_S) ;
+
+		
 	//####kernel end####
 }
 
