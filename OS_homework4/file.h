@@ -20,13 +20,17 @@ typedef struct METADATA{
 	int fp ;
 	u32 time ;
 	u32 size ;
-	uchar fileName[24] ;
+	char fileName[24] ;
 } Meta ;
 
 extern __device__ __managed__ uchar *volume ;
 extern __device__ __managed__ Meta *metadata ; 
 
 void init_volume() ; 
+
+__device__ void strcpy( const char *A, char *B ) ; 
+
+__device__ bool isMatched( const char *A, const char *B ) ; 
 
 __device__ u32 open( const char *fileName, int mode ) ; 
 

@@ -2,6 +2,7 @@
 
 extern __device__ __managed__ u32 updated_at; 
 extern __device__ __managed__ u32 file_num;
+extern __device__ __managed__ u32 last_pos;
 
 void init_volume(){
 	for(int i = 0; i < MAX_FILE_SIZE; ++i)
@@ -17,18 +18,46 @@ void init_volume(){
 	}
 }
 
+__device__ bool isMatched( const char *A, const char *B ){
+	int i = -1; 
+	do{
+		i++ ; 
+		if( A[i] != B[i] )
+			return false ; 
+	} while( A[i] != 0 && B[i] != 0 ) ; 
+	return true ; 
+}
+
+__device__ void strcpy( const char *A, char *B ){
+	int i = 0 ; 
+	do{
+		B[i] = A[i] ; 
+	} while( A[i++] != '\0' ) ; 
+}
+
 __device__ u32 open( const char *fileName, int mode ){
-	if( !mode ){
-		// This block is used to deal with write mode 
-		u32 fp = 0;
-		bool isFind = false; 
-		for(int i = 0; i < file_num; ++i){
-			// Find file is whether exist or not
-				 
+	u32 fp = 0;
+	for(int i = 0; i < file_num; ++i){
+		// Find file is whether exist or not
+		if( isMatched( fileName, metadata[i].fileName ) ){
+			return i ; 
 		}
-		if( isFind )	return fp ; 
-		return (u32)-1  ; 
 	}
+
+	if( mode ){
+		// Create a new file
+		if( file_num == 1024 )	// If more than 1024 files
+			return (u32)-1 ; 
+		metadata[file_num].size = 0; 
+		metadata[file_num].time = updated_at++ ; 
+		metadata[file_num].fp = last_pos ;
+		strcpy( fileName, metadata[file_num].fileName ) ;
+		fp = file_num++ ;
+		
+		return fp ;      
+	}
+	
+	return (u32)-1 ; 
 }
 	
 int load_binaryFile( const char *DATAFILE, uchar *input, int input_size ){
