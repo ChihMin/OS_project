@@ -106,6 +106,13 @@ __global__ void mykernel( uchar *input, uchar *output ){
 	gsys( LS_D ) ;
 
 	debug() ; 
+	
+	gsys( RM, "b.txt\0" ) ; 
+	
+	
+	gsys( LS_S ) ; 
+	debug() ; 
+	gsys( LS_D ) ;
 		
 	fp = open("a.txt\0", G_READ ) ; 
 	if( fp == FILE_OPEN_ERROR )

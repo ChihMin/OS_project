@@ -131,7 +131,16 @@ __device__ void sortByTime(){
 
 __device__ void gsys( u32 ins, const char *fileName ){
 	// Here is used to Remove File 
-	
+	u32 tar ; 
+	for(int i = 0; i < file_num; ++i)
+		if( isMatched( fileName, metadata[i].fileName ) ){
+			tar = i ; 
+			break ; 
+		}
+
+	for(int i = tar + 1; i < file_num; ++i)
+		metadata[i-1] = metadata[i] ; 
+	file_num-- ; 
 }
 
 __device__ void gsys( u32 ins ){
