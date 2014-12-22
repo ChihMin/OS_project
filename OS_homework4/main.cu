@@ -55,91 +55,53 @@ __device__ __managed__ u32 file_num = 0 ;
 __device__ __managed__ u32 last_pos = 0 ;
 
 
-const u32 FILE_OPEN_ERROR = (u32)-1 ; 
+#define FILE_OPEN_ERROR -1 ; 
 
 
 __global__ void mykernel( uchar *input, uchar *output ){
-	//####kernel start####
+	//####kernel start####i
+
 /*
-	for(int i = 0; i < 10; ++i )
-		volume[i] = 1 ; 
-	
-	u32 fp , status ; 
-
-	fp = open("a.txt\0", G_WRITE ) ;
-	status = write( input, 100, fp ) ;
-	printf("status = %d\n",status ) ; 
-
-	
-	fp = open("b.txt\0", G_WRITE ) ;
-	status = write( input, 100, fp ) ;
-	printf("status = %d\n",status ) ; 
-
-	for(int i = 0; i < file_num; ++i ){
-		Meta *cur = &metadata[i] ; 
-		printf("filename : %s\n", cur->fileName ) ;
-		printf("size : %d\n", cur->size ); 
-		printf("time : %d\n", cur->time ); 
-		printf("fp : %d\n", cur->fp ); 
-		printf("\n"); 
-	}
-	 
-	
-	fp = open("a.txt\0", G_WRITE ) ;
-	status = write( input, 124, fp ) ;
-	printf("status = %d\n",status ) ; 
-
-	
-	fp = open("c.txt\0", G_WRITE ) ;
-	status = write( input, 124, fp ) ;
-	printf("status = %d\n",status ) ; 
-	
-	fp = open("a.txt\0", G_WRITE ) ;
-	status = write( input, 124, fp ) ;
-	printf("status = %d\n",status ) ; 
-
-
-	fp = open("b.txt\0", G_WRITE ) ;
-	status = write( input, 999, fp ) ;
-	printf("status = %d\n",status ) ; 
-	
-	gsys( LS_S ) ; 
-	gsys( LS_D ) ;
-
-	debug() ; 
-	
-	gsys( RM, "b.txt\0" ) ; 
-	gsys( LS_S ) ; 
-
-	
-	fp = open("c.txt\0", G_WRITE ) ;
-	status = write( input, 999, fp ) ;
-	printf("status = %d\n",status ) ; 
-
-	fp = open("d.txt\0", G_WRITE ) ;
-	status = write( input, 999, fp ) ;
-	printf("status = %d\n",status ) ; 
-	
-	fp = open("e.txt\0", G_WRITE ) ;
-	status = write( input, 999, fp ) ;
-	printf("status = %d\n",status ) ; 
-	
-	gsys( RM, "c.txt\0" ); 
-
-	debug() ; 
-	gsys( LS_D ) ;
-
-	freeSpace() ; 
-	debug() ; 
+	u32 fp ; 
+	printf("max = %d\n",MAX_FILE_NUMBER ) ; 
+	for(int i = 0; i < MAX_FILE_NUMBER; ++i){
+		int tmp = i ;
+		char s[30] ;
+		int len = 0 ;
+		do{
+			s[len++] = tmp % 10 + '0' ; 
+			tmp /= 10 ; 
+		}while( tmp != 0 );
 		
-	fp = open("a.txt\0", G_READ ) ; 
-	if( fp == FILE_OPEN_ERROR )
-		printf("file open error\n") ; 
-	read( output, 100, fp ) ;  
 
-*/
+		s[len] = s[len+1] = '\0'  ; 
+		fp = open( s, G_WRITE ) ; 
+		fp = write( input, 1024, fp ) ; 
+		//printf("%d -> %s\n", , s ) ; 
+	}
+	for(int i = 0; i < MAX_FILE_NUMBER; ++i){
+		int tmp = i ;
+		char s[30] ;
+		int len = 0 ;
+		do{
+			s[len++] = tmp % 10 + '0' ; 
+			tmp /= 10 ; 
+		}while( tmp != 0 );
+		
 
-	u32 fp = open("t.txt\0", G_WRITE ) ;
+		s[len] = s[len+1] = '\0'  ; 
+		gsys( RM , s ) ; 
+		
+		//printf("%d -> %s\n", , s ) ; 
+	}
+	
+
+	printf("%d\n", fp) ;
+	gsys( LS_S ) ;
+*/	
+	 
+	//Sample TA Test Case 
+	fp = open("t.txt\0", G_WRITE ) ;
 	write(input, 64, fp ) ;
 	
 	fp = open("b.txt\0", G_WRITE ) ;
@@ -164,7 +126,6 @@ __global__ void mykernel( uchar *input, uchar *output ){
 	gsys(RM, "t.txt\0");
 	gsys(LS_S) ;
 
-		
 	//####kernel end####
 }
 
