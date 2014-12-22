@@ -125,7 +125,17 @@ __global__ void mykernel( uchar *input, uchar *output ){
 
 	gsys(RM, "t.txt\0");
 	gsys(LS_S) ;
+/*	
+	TEST CREATE TIME 
+	open("d.txt\0", G_WRITE) ; 
+	open("e.txt\0", G_WRITE) ; 
+	open("f.txt\0", G_WRITE) ; 
 
+	debug() ; 
+	gsys( LS_S ) ;
+	gsys( LS_D ) ; 
+
+*/
 	//####kernel end####
 }
 

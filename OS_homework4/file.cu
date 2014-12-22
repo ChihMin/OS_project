@@ -41,37 +41,13 @@ __device__ void debug(){
 		Meta *cur = &metadata[i] ; 
 		printf("filename : %s\n", cur->fileName ) ;
 		printf("size : %d\n", cur->size ); 
-		printf("time : %d\n", cur->time ); 
+		printf("updated_time : %d\n", cur->time ); 
+		printf("created_time : %d\n", cur->created_time) ; 
 		printf("fp : %d\n", cur->fp ); 
 		printf("\n"); 
 	}
 
 	printf("=========  E  N  D   =========\n"); 
-}
-
-__device__ u32 open( const char *fileName, int mode ){
-	u32 fp = 0;
-	for(int i = 0; i < file_num; ++i){
-		// Find file is whether exist or not
-		if( isMatched( fileName, metadata[i].fileName ) ){
-			return i ; 
-		}
-	}
-
-	if( mode ){
-		// Create a new file
-		if( file_num == 1024 )	// If more than 1024 files
-			return (u32)-1 ; 
-		metadata[file_num].size = 0; 
-		metadata[file_num].created_time = updated_at++ ; 
-		metadata[file_num].fp = last_pos ;
-		strcpy( fileName, metadata[file_num].fileName ) ;
-		fp = file_num++ ;
-		
-		return fp ;      
-	}
-	
-	return (u32)-1 ; 
 }
 
 __device__ bool sizeCmp( const Meta &A, const Meta &B ){
@@ -88,6 +64,32 @@ __device__ bool timeCmp( const Meta &A, const Meta &B ){
 __device__ bool filePointerCmp( const Meta &A, const Meta &B ){
 	return A.fp > B.fp ; 
 
+}
+
+__device__ u32 open( const char *fileName, int mode ){
+	u32 fp = 0;
+	for(int i = 0; i < file_num; ++i){
+		// Find file is whether exist or not
+		if( isMatched( fileName, metadata[i].fileName ) ){
+			return i ; 
+		}
+	}
+
+	if( mode ){
+		// Create a new file
+		if( file_num == 1024 )	// If more than 1024 files
+			return (u32)-1 ; 
+		metadata[file_num].size = 0; 
+		metadata[file_num].time = updated_at ;
+		metadata[file_num].created_time = updated_at++ ; 
+		metadata[file_num].fp = last_pos ;
+		strcpy( fileName, metadata[file_num].fileName ) ;
+		fp = file_num++ ;
+		
+		return fp ;      
+	}
+	
+	return (u32)-1 ; 
 }
 
 __device__ void read( uchar *output, int size, u32 fp){
