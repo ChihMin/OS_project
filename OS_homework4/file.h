@@ -28,7 +28,8 @@ typedef struct METADATA{
 	int fp ;
 	u32 time ;
 	u32 size ;
-	char fileName[24] ;
+	u32 created_time ; 
+	char fileName[20] ;
 } Meta ;
 
 extern __device__ __managed__ uchar *volume ;

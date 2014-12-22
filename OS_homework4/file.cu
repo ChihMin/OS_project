@@ -63,7 +63,7 @@ __device__ u32 open( const char *fileName, int mode ){
 		if( file_num == 1024 )	// If more than 1024 files
 			return (u32)-1 ; 
 		metadata[file_num].size = 0; 
-		metadata[file_num].time = updated_at++ ; 
+		metadata[file_num].created_time = updated_at++ ; 
 		metadata[file_num].fp = last_pos ;
 		strcpy( fileName, metadata[file_num].fileName ) ;
 		fp = file_num++ ;
@@ -77,7 +77,7 @@ __device__ u32 open( const char *fileName, int mode ){
 __device__ bool sizeCmp( const Meta &A, const Meta &B ){
 	if( A.size != B.size )	
 		return A.size > B.size ;
-	return A.time < B.time ; 
+	return A.created_time < B.created_time ; 
 }
 
 
