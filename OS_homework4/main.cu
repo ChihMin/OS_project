@@ -101,7 +101,7 @@ __global__ void mykernel( uchar *input, uchar *output ){
 */	
 	 
 	//Sample TA Test Case 
-	fp = open("t.txt\0", G_WRITE ) ;
+	u32 fp = open("t.txt\0", G_WRITE ) ;
 	write(input, 64, fp ) ;
 	
 	fp = open("b.txt\0", G_WRITE ) ;
