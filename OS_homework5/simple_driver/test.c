@@ -14,7 +14,7 @@ int main(){
 
 	int i ;
 	for(i = 0; i < 12; ++i)
-		printf("%c\n", buf[i]);
+		printf("%d\n", buf[i]);
 
 	return 0; 
 }

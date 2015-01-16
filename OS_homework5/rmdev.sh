@@ -1,3 +1,3 @@
 #!/bin/bash
-rm /dev/mydev
+sudo rm /dev/mydev
 ls -l /dev/mydev

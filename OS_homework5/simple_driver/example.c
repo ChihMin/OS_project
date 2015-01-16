@@ -19,10 +19,11 @@ static int example_close(struct inode *inode, struct file *flip){
 }
 
 static ssize_t example_read(struct file *flip, char *buf, size_t size, loff_t *f_pos){
-	printk("<1>EXAMPLE: read (size=%zu)\n", size);
 	int i;
+	printk("<1>EXAMPLE: read (size=%zu)\n", size);
 	for(i = 0; i < 10; ++i)
-		buf[i] = i;
+		buf[i] = '2';
+	
 	return 0;
 }
 
@@ -39,9 +40,9 @@ static struct file_operations example_fops = {
 };
 
 static int example_init(void){
+	int result;
 	printk("<1>EXAMPLE:init\n");
 	
-	int result;
 	/* Register character device */
 	result = register_chrdev(EXAMPLE_MAJOR, EXAMPLE_NAME, &example_fops);
 	if( result < 0 ){
