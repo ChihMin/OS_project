@@ -1,4 +1,5 @@
 #include <linux/init.h>
+#include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -19,11 +20,14 @@ static int example_close(struct inode *inode, struct file *flip){
 
 static ssize_t example_read(struct file *flip, char *buf, size_t size, loff_t *f_pos){
 	printk("<1>EXAMPLE: read (size=%zu)\n", size);
+	int i;
+	for(i = 0; i < 10; ++i)
+		buf[i] = i;
 	return 0;
 }
 
 static ssize_t example_write(struct file *flip, const char *buf, size_t size, loff_t *f_pos){
-	printk("<1>EXAPLE: write (size=%zu)\n", size);
+	printk("<1>EXAMPLE: write (size=%zu)\n", size);
 	return size;
 }
 
