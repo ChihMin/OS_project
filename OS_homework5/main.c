@@ -7,6 +7,7 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 #include <linux/sched.h>
+#include <linux/delay.h>
 #include "ioc_hw5.h"
 
 MODULE_LICENSE("Dual BSD/GPL");
@@ -203,8 +204,10 @@ static ssize_t drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args
 			break;
 
 		case HW5_IOCWAITREADABLE:
-			ret = __get_user(getValue, (int __user *)args);
-			printk("%s:%s(): FILE_READABLE\n", OS_HW5, __FUNCTION__);
+			while( !myinl(DMAREADABLEADDR) )
+				msleep( 500 );
+			ret = __put_user(1, (int __user *)args);
+			printk("%s:%s(): wait readable 1\n", OS_HW5, __FUNCTION__);
 			break;
 
 		default :
@@ -246,14 +249,11 @@ static ssize_t drv_write(struct file *flip, const char *buf, size_t size, loff_t
 	
 	INIT_WORK( math_work, arithmetic_routine );
 
+	schedule_work( math_work );
 	if( blockStatus ){
-		// Block mode
+		// If now is Block mode, hold and wait for running
 		printk("%s:%s():block\n", OS_HW5, __FUNCTION__);
-		schedule_work( math_work );
 		flush_scheduled_work();		
-	}
-	else{
-		// non-block mode
 	}
 	//printk("%s:%s(): %c %d %d vs status %d\n", OS_HW5, __FUNCTION__, a, b, c, blockStatus); 
 	 
