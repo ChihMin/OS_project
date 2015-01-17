@@ -5,6 +5,7 @@
 #include <linux/cdev.h>
 #include <asm/uaccess.h>
 #include <linux/slab.h>
+#include <linux/workqueue.h>
 #include "ioc_hw5.h"
 
 MODULE_LICENSE("Dual BSD/GPL");
@@ -38,6 +39,13 @@ static ssize_t drv_read(struct file *flip, char *buf, size_t size, loff_t *f_pos
 static ssize_t drv_write(struct file *flip, const char *buf, size_t size, loff_t *f_pos);
 static int drv_ioctl(struct file*, unsigned int, unsigned long);
 
+void myoutb(unsigned char data, unsigned short int port);
+void myoutw(unsigned short data, unsigned short int port);
+void myoutl(unsigned long data, unsigned short int port);
+unsigned char myinb(unsigned short port);
+unsigned short myinw(unsigned short port);
+unsigned long myinl(unsigned short port);
+
 
 static struct file_operations drv_fops = {
 	owner:			THIS_MODULE,
@@ -47,6 +55,30 @@ static struct file_operations drv_fops = {
 	write:			drv_write,
 	unlocked_ioctl:	drv_ioctl
 };
+
+void myoutb(unsigned char data, unsigned short int port){
+	*(volatile unsigned char*)(dma_buf + port) = data;
+}
+
+void myoutw(unsigned short data, unsigned short int port){
+	*(volatile unsigned short*)(dma_buf + port) = data;
+}
+
+void myoutl(unsigned long data, unsigned short int port){
+	*(volatile unsigned long*)(dma_buf + port) = data;
+}
+
+unsigned char myinb(unsigned short port){
+	return *( volatile unsigned char *)(dma_buf + port);
+}
+
+unsigned short myinw(unsigned short port){
+	return *( volatile unsigned short *)(dma_buf + port);
+}
+
+unsigned long myinl(unsigned short port){
+	return *( volatile unsigned long *)(dma_buf + port);
+}
 
 static int drv_open(struct inode *inode, struct file *filp){
 	try_module_get(THIS_MODULE);
@@ -62,39 +94,52 @@ static int drv_release(struct inode *inode, struct file *flip){
 
 static int drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args){
 	int ret = 0;
-	int value = 0;
+	int getValue = 0;
 	switch(cmd){
 		case HW5_IOCSETSTUID:
 			ret = __get_user(hw5_num, (int __user *)args);
+			myoutl( hw5_num, DMASTUIDADDR); 
 			printk("OS_HW5:%s(): My STUID is %d\n",__FUNCTION__, hw5_num);
 			break;
 
 		case HW5_IOCSETRWOK:
-			ret = __get_user(value, (int __user *)args);
+			ret = __get_user(getValue, (int __user *)args);
+			myoutl(getValue, DMARWOKADDR); 
 			printk("OS_HW5:%s(): RW OK\n", __FUNCTION__);
 			break;
 		
 		case HW5_IOCSETIOCOK:
-			ret = __get_user(value, (int __user *)args);
+			ret = __get_user(getValue, (int __user *)args);
+			myoutl(getValue, DMAIOCOKADDR); 
 			printk("OS_HW5:%s(): IOC OK\n", __FUNCTION__);
 			break;
 
 		case HW5_IOCSETIRQOK:
-			ret = __get_user(value, (int __user *)args);
-			printk("OS_HW5:%s(): IRQ OK\n", __FUNCTION__);
+			ret = __get_user(getValue, (int __user *)args);
+			//myoutl(getValue, DMAIRQOKADDR); 	
+			// printk("OS_HW5:%s(): IRQ OK\n", __FUNCTION__);
 			break;
 		
 		case HW5_IOCSETBLOCK:
-			ret = __get_user(value, (int __user *)args);
-			if( value )	printk("%s:%s(): Blocking IO\n", OS_HW5, __FUNCTION__);
-			else	printk("%s:%s(): Non-Blocking IO\n", OS_HW5, __FUNCTION__);
+			ret = __get_user(getValue, (int __user *)args);
+			if( getValue ){	
+				// Set block mode
+				
+				printk("%s:%s(): Blocking IO\n", OS_HW5, __FUNCTION__);
+			}
+			else{	
+				// Set non-block mode
+				printk("%s:%s(): Non-Blocking IO\n", OS_HW5, __FUNCTION__);
+			}
 			break;
+
 		case HW5_IOCWAITREADABLE:
-			ret = __get_user(value, (int __user *)args);
+			ret = __get_user(getValue, (int __user *)args);
 			printk("%s:%s(): FILE_READABLE\n", OS_HW5, __FUNCTION__);
 			break;
+
 		default :
-			printk("OS_HW5:%s(): default\n", __FUNCTION__);
+			printk("OS_HW5:%s(): NO METHOD TO PROCESS\n", __FUNCTION__);
 		
 	}
 	return 0;
