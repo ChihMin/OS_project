@@ -91,8 +91,6 @@ int prime(int base, short nth)
 static void arithmetic_routine(struct work_struct *ws ){
     struct dataIn data;
     int ans;
-    int readable;
-    int ret;
 
     data.a = myinb(DMAOPCODEADDR);
     data.b = myinl(DMAOPERANDBADDR);
@@ -217,7 +215,10 @@ static ssize_t drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args
 }
 
 static ssize_t drv_read(struct file *flip, char *buf, size_t size, loff_t *f_pos){
-	printk("OS_HW5:%s(): ans = %d\n",__FUNCTION__, myinl(DMAANSADDR));
+	int ans = myinl(DMAANSADDR);
+	printk("OS_HW5:%s(): ans = %d\n",__FUNCTION__, ans);
+	
+	copy_to_user( buf, &ans, sizeof( int ) );	
 	myoutl( 0, DMAANSADDR);
 	myoutl( 0, DMAREADABLEADDR); 
 
@@ -228,7 +229,6 @@ static ssize_t drv_write(struct file *flip, const char *buf, size_t size, loff_t
 	char a = 0;
 	int b;
 	short c;
-	int ret;
 	struct dataIn data;
 	int blockStatus = 0;
 	
