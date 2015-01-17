@@ -5,15 +5,29 @@
 #include <linux/cdev.h>
 #include <asm/uaccess.h>
 #include <linux/slab.h>
+#include "ioc_hw5.h"
 
 MODULE_LICENSE("Dual BSD/GPL");
 
-#define EXAMPLE_MAJOR 60
 #define EXAMPLE_NAME "mydev"
 
 static int Major, Minor;
 struct cdev *dev_cdevp = NULL;
 
+static int drv_open(struct inode *inode, struct file *flip);
+static int drv_release(struct inode *inode, struct file *flip);
+static ssize_t drv_read(struct file *flip, char *buf, size_t size, loff_t *f_pos);
+static ssize_t drv_write(struct file *flip, const char *buf, size_t size, loff_t *f_pos);
+static int drv_ioctl(struct inode*, struct file*, unsigned int, unsigned long);
+
+static struct file_operations drv_fops = {
+	owner:			THIS_MODULE,
+	open:			drv_open,
+	release:		drv_release,
+	read:			drv_read,
+	write:			drv_write,
+	unlocked_ioctl:	drv_ioctl
+};
 
 static int drv_open(struct inode *inode, struct file *filp){
 	printk("OS_HW5:%s():device open\n",__FUNCTION__);
@@ -25,8 +39,13 @@ static int drv_release(struct inode *inode, struct file *flip){
 	return 0;
 }
 
+static int drv_ioctl(struct inode* inode, struct file *flip, unsigned int cmd, unsigned long args){
+	printk("OS_HW5:%s():....\n",__FUNCTION__);
+	return 0;
+}
+
 static ssize_t drv_read(struct file *flip, char *buf, size_t size, loff_t *f_pos){
-	printk("OS_HW5:%s():device release\n",__FUNCTION__);
+	printk("OS_HW5:%s(): read\n",__FUNCTION__);
 			
 	return 0;
 }
@@ -36,13 +55,6 @@ static ssize_t drv_write(struct file *flip, const char *buf, size_t size, loff_t
 	return size;
 }
 
-static struct file_operations drv_fops = {
-	owner:		THIS_MODULE,
-	open:		drv_open,
-	release:	drv_release,
-	read:		drv_read,
-	write:		drv_write
-};
 
 static int init_modules(void){
 	int ret;
@@ -90,9 +102,9 @@ failed:
 }
 
 static void exit_modules(void){
+	dev_t dev;
 	printk("OS_HW5:%s():unregister chrdev\n",__FUNCTION__);
 	/*  Unregister character device */
-	dev_t dev;
 
 	dev = MKDEV(Major, Minor);
 	if(dev_cdevp){
