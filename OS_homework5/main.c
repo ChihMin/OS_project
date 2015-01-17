@@ -158,7 +158,7 @@ static int drv_open(struct inode *inode, struct file *filp){
 
 static int drv_release(struct inode *inode, struct file *flip){
 	module_put(THIS_MODULE);
-	printk("OS_HW5:%s():device release\n",__FUNCTION__);
+	printk("OS_HW5:%s():device close\n",__FUNCTION__);
 	return 0;
 }
 
@@ -186,8 +186,8 @@ static ssize_t drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args
 
 		case HW5_IOCSETIRQOK:
 			ret = __get_user(getValue, (int __user *)args);
-			//myoutl(getValue, DMAIRQOKADDR); 	
-			// printk("OS_HW5:%s(): IRQ OK\n", __FUNCTION__);
+			myoutl(getValue, DMAIRQOKADDR); 	
+			printk("OS_HW5:%s(): IRQ OK\n", __FUNCTION__);
 			break;
 		
 		case HW5_IOCSETBLOCK:
