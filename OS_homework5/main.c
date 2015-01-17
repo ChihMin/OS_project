@@ -10,6 +10,7 @@
 MODULE_LICENSE("Dual BSD/GPL");
 
 #define EXAMPLE_NAME "mydev"
+#define OS_HW5 "OS_HW5"
 
 static int Major, Minor;
 static int hw5_num = 0;
@@ -43,11 +44,38 @@ static int drv_release(struct inode *inode, struct file *flip){
 
 static int drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args){
 	int ret = 0;
+	int value = 0;
 	printk("OS_HW5:%s():.... cmd = %d vs %d\n",__FUNCTION__, _IOC_NR(cmd), _IOC_NR(HW5_IOCSETSTUID));
 	switch(cmd){
 		case HW5_IOCSETSTUID:
 			ret = __get_user(hw5_num, (int __user *)args);
-			printk("OS_HW5:%s(): My STUID is %d\n",__FUNCTION__, ret);
+			printk("OS_HW5:%s(): My STUID is %d\n",__FUNCTION__, hw5_num);
+			break;
+
+		case HW5_IOCSETRWOK:
+			ret = __get_user(value, (int __user *)args);
+			printk("OS_HW5:%s(): RW OK\n", __FUNCTION__);
+			break;
+		
+		case HW5_IOCSETIOCOK:
+			ret = __get_user(value, (int __user *)args);
+			printk("OS_HW5:%s(): IOC OK\n", __FUNCTION__);
+			break;
+
+		case HW5_IOCSETIRQOK:
+			ret = __get_user(value, (int __user *)args);
+			printk("OS_HW5:%s(): IRQ OK\n", __FUNCTION__);
+			break;
+		
+		case HW5_IOCSETBLOCK:
+			ret = __get_user(value, (int __user *)args);
+			if( value )	printk("%s:%s(): Blocking IO\n", OS_HW5, __FUNCTION__);
+			else	printk("%s:%s(): Non-Blocking IO\n", OS_HW5, __FUNCTION__);
+			break;
+		case HW5_IOCWAITREADABLE:
+			ret = __get_user(value, (int __user *)args);
+			printk("%s:%s(): FILE_READABLE\n", OS_HW5, __FUNCTION__);
+			break;
 		default :
 			printk("OS_HW5:%s(): default\n", __FUNCTION__);
 		
