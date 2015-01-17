@@ -15,18 +15,17 @@ MODULE_LICENSE("Dual BSD/GPL");
 
 #define DMA_BUFSIZE 64
 
-#define DMASTUIDADDR 0x0                  // ioctl : set and printk value
-#define DMARWOKADDR 0x4                 // ioctl : set and printk value 
-#define DMAIOCOKADDR 0x8                 // ioctl : set and printk value 
-#define DMAIRQOKADDR 0xc                 // ioctl : set and printk value 
-#define DMACOUNTADDR 0x10              // ISR : set value, exit_module : printk value
-#define DMAANSADDR 0x14                    // work routine : set value, read: printk value 
-#define DMAREADABLEADDR 0x18       // ioctl : check value, write : check value
-#define DMABLOCKADDR 0x1c               // ioctl: set and printk value, write: check value 
-#define DMAOPCODEADDR 0x20           // write: set value, work routine: get value
-#define DMAOPERANDBADDR 0x21      // write: set value, work routine: get value
-#define DMAOPERANDCADDR 0x25      // write: set value, work routine: get value
-
+#define DMASTUIDADDR 0x0    // Student ID
+#define DMARWOKADDR 0x4     // RW function complete 
+#define DMAIOCOKADDR 0x8	// ioctl function complete 
+#define DMAIRQOKADDR 0xc    // ISR function complete 
+#define DMACOUNTADDR 0x10   // interrupt count function complete
+#define DMAANSADDR 0x14     // Computation answer 
+#define DMAREADABLEADDR 0x18	// READABLE variable for synchronize
+#define DMABLOCKADDR 0x1c		// Blocking or Non-Blocking IO 
+#define DMAOPCODEADDR 0x20      // data.a opcode
+#define DMAOPERANDBADDR 0x21    // data.b opcode
+#define DMAOPERANDCADDR 0x25    // data.c opcode
 
 void *dma_buf;
 static int Major, Minor;
@@ -122,9 +121,9 @@ static int drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args){
 		
 		case HW5_IOCSETBLOCK:
 			ret = __get_user(getValue, (int __user *)args);
+			myoutl(getValue, DMABLOCKADDR);
 			if( getValue ){	
 				// Set block mode
-				
 				printk("%s:%s(): Blocking IO\n", OS_HW5, __FUNCTION__);
 			}
 			else{	
@@ -139,8 +138,8 @@ static int drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args){
 			break;
 
 		default :
-			printk("OS_HW5:%s(): NO METHOD TO PROCESS\n", __FUNCTION__);
-		
+			printk("OS_HW5:%s(): (ERROR)NO METHOD TO PROCESS\n", __FUNCTION__);
+			return -1;
 	}
 	return 0;
 }
