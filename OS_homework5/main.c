@@ -38,12 +38,15 @@ void *dma_buf;
 static int Major, Minor;
 static int hw5_num = 0;
 struct cdev *dev_cdevp = NULL;
+static struct work_struct *math_work = NULL;
 
 static int drv_open(struct inode *inode, struct file *flip);
 static int drv_release(struct inode *inode, struct file *flip);
 static ssize_t drv_read(struct file *flip, char *buf, size_t size, loff_t *f_pos);
 static ssize_t drv_write(struct file *flip, const char *buf, size_t size, loff_t *f_pos);
 static ssize_t drv_ioctl(struct file*, unsigned int, unsigned long);
+
+static void arithmetic_routine(struct work_struct *ws);
 
 void myoutb(unsigned char data, unsigned short int port);
 void myoutw(unsigned short data, unsigned short int port);
@@ -61,6 +64,68 @@ static struct file_operations drv_fops = {
 	write:			drv_write,
 	unlocked_ioctl:	drv_ioctl,
 };
+
+int prime(int base, short nth)
+{
+    int fnd=0;
+    int i, num, isPrime;
+
+    num = base;
+    while(fnd != nth) {
+        isPrime=1;
+        num++;
+        for(i=2;i<=num/2;i++) {
+            if(num%i == 0) {
+                isPrime=0;
+                break;
+            }
+        }
+        
+        if(isPrime) {
+            fnd++;
+        }
+    }
+    return num;
+}
+
+static void arithmetic_routine(struct work_struct *ws ){
+    struct dataIn data;
+    int ans;
+    int readable;
+    int ret;
+
+    data.a = myinb(DMAOPCODEADDR);
+    data.b = myinl(DMAOPERANDBADDR);
+    data.c = myinw(DMAOPERANDCADDR);
+
+    switch(data.a) {
+        case '+':
+            ans = data.b + data.c;
+            break;
+			
+        case '-':
+            ans = data.b - data.c;
+            break;
+
+        case '*':
+            ans = data.b * data.c;
+            break;
+
+        case '/':
+            ans = data.b / data.c;
+            break;
+
+        case 'p':
+            ans = prime(data.b, data.c);
+            break;
+
+        default:
+            ans = 0;
+    }
+	printk("%s:%s(): %d %c %d = %d\n", OS_HW5, __FUNCTION__, data.b, data.a, data.c, ans);
+	myoutl(ans, DMAANSADDR );
+	myoutl(1, DMAREADABLEADDR);
+}
 
 void myoutb(unsigned char data, unsigned short int port){
 	*(volatile unsigned char*)(dma_buf + port) = data;
@@ -152,8 +217,10 @@ static ssize_t drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args
 }
 
 static ssize_t drv_read(struct file *flip, char *buf, size_t size, loff_t *f_pos){
-	printk("OS_HW5:%s(): read\n",__FUNCTION__);
-			
+	printk("OS_HW5:%s(): ans = %d\n",__FUNCTION__, myinl(DMAANSADDR));
+	myoutl( 0, DMAANSADDR);
+	myoutl( 0, DMAREADABLEADDR); 
+
 	return 0;
 }
 
@@ -164,15 +231,31 @@ static ssize_t drv_write(struct file *flip, const char *buf, size_t size, loff_t
 	int ret;
 	struct dataIn data;
 	int blockStatus = 0;
-
+	
+	printk("%s:%s():queue work\n", OS_HW5, __FUNCTION__);
 	copy_from_user( &data, buf, sizeof( struct dataIn ) );	
 		
 	a = data.a;
 	b = data.b;
 	c = data.c;
-
+	
 	blockStatus = myinl(DMABLOCKADDR);
-	printk("%s:%s(): %c %d %d vs status %d\n", OS_HW5, __FUNCTION__, a, b, c, blockStatus); 
+    myoutb(a, DMAOPCODEADDR);
+    myoutl(b, DMAOPERANDBADDR);
+    myoutw(c, DMAOPERANDCADDR);
+	
+	INIT_WORK( math_work, arithmetic_routine );
+
+	if( blockStatus ){
+		// Block mode
+		printk("%s:%s():block\n", OS_HW5, __FUNCTION__);
+		schedule_work( math_work );
+		flush_scheduled_work();		
+	}
+	else{
+		// non-block mode
+	}
+	//printk("%s:%s(): %c %d %d vs status %d\n", OS_HW5, __FUNCTION__, a, b, c, blockStatus); 
 	 
 	return size;
 }
@@ -211,11 +294,16 @@ static int init_modules(void){
 		goto failed;
 	}
 	
-	dma_buf = kmalloc(DMA_BUFSIZE, GFP_KERNEL);
+	dma_buf = kzalloc(DMA_BUFSIZE, GFP_KERNEL);
 	if( dma_buf )	
 		printk("%s:%s():allocate dma buffer\n", OS_HW5, __FUNCTION__);
 	else
 		printk("%s:%s():allocate dma buffer FAILED !!\n", OS_HW5, __FUNCTION__);
+
+	math_work = kzalloc(sizeof(struct work_struct), GFP_KERNEL);
+	if( math_work ){
+		printk("----------> SUCCESS allocate math_work structure <--------\n");
+	}
 
 	return 0;
 
@@ -245,6 +333,8 @@ static void exit_modules(void){
 	unregister_chrdev(Major, EXAMPLE_NAME);
 	printk("OS_HW5:%s():unregister chrdev\n",__FUNCTION__);
 	
+	kfree( math_work );
+
 	printk("OS_HW5:%s():..................End.................\n",__FUNCTION__);
 }
 
