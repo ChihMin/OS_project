@@ -6,6 +6,7 @@
 #include <asm/uaccess.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
+#include <linux/sched.h>
 #include "ioc_hw5.h"
 
 MODULE_LICENSE("Dual BSD/GPL");
@@ -27,6 +28,12 @@ MODULE_LICENSE("Dual BSD/GPL");
 #define DMAOPERANDBADDR 0x21    // data.b opcode
 #define DMAOPERANDCADDR 0x25    // data.c opcode
 
+struct dataIn{
+	char a;
+	int b;
+	short c;
+};
+
 void *dma_buf;
 static int Major, Minor;
 static int hw5_num = 0;
@@ -36,7 +43,7 @@ static int drv_open(struct inode *inode, struct file *flip);
 static int drv_release(struct inode *inode, struct file *flip);
 static ssize_t drv_read(struct file *flip, char *buf, size_t size, loff_t *f_pos);
 static ssize_t drv_write(struct file *flip, const char *buf, size_t size, loff_t *f_pos);
-static int drv_ioctl(struct file*, unsigned int, unsigned long);
+static ssize_t drv_ioctl(struct file*, unsigned int, unsigned long);
 
 void myoutb(unsigned char data, unsigned short int port);
 void myoutw(unsigned short data, unsigned short int port);
@@ -52,7 +59,7 @@ static struct file_operations drv_fops = {
 	release:		drv_release,
 	read:			drv_read,
 	write:			drv_write,
-	unlocked_ioctl:	drv_ioctl
+	unlocked_ioctl:	drv_ioctl,
 };
 
 void myoutb(unsigned char data, unsigned short int port){
@@ -91,7 +98,7 @@ static int drv_release(struct inode *inode, struct file *flip){
 	return 0;
 }
 
-static int drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args){
+static ssize_t drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args){
 	int ret = 0;
 	int getValue = 0;
 	switch(cmd){
@@ -151,7 +158,22 @@ static ssize_t drv_read(struct file *flip, char *buf, size_t size, loff_t *f_pos
 }
 
 static ssize_t drv_write(struct file *flip, const char *buf, size_t size, loff_t *f_pos){
-	printk("<1>EXAMPLE: write (size=%zu)\n", size);
+	char a = 0;
+	int b;
+	short c;
+	int ret;
+	struct dataIn data;
+	int blockStatus = 0;
+
+	copy_from_user( &data, buf, sizeof( struct dataIn ) );	
+		
+	a = data.a;
+	b = data.b;
+	c = data.c;
+
+	blockStatus = myinl(DMABLOCKADDR);
+	printk("%s:%s(): %c %d %d vs status %d\n", OS_HW5, __FUNCTION__, a, b, c, blockStatus); 
+	 
 	return size;
 }
 
