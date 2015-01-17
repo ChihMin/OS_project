@@ -12,6 +12,22 @@ MODULE_LICENSE("Dual BSD/GPL");
 #define EXAMPLE_NAME "mydev"
 #define OS_HW5 "OS_HW5"
 
+#define DMA_BUFSIZE 64
+
+#define DMASTUIDADDR 0x0                  // ioctl : set and printk value
+#define DMARWOKADDR 0x4                 // ioctl : set and printk value 
+#define DMAIOCOKADDR 0x8                 // ioctl : set and printk value 
+#define DMAIRQOKADDR 0xc                 // ioctl : set and printk value 
+#define DMACOUNTADDR 0x10              // ISR : set value, exit_module : printk value
+#define DMAANSADDR 0x14                    // work routine : set value, read: printk value 
+#define DMAREADABLEADDR 0x18       // ioctl : check value, write : check value
+#define DMABLOCKADDR 0x1c               // ioctl: set and printk value, write: check value 
+#define DMAOPCODEADDR 0x20           // write: set value, work routine: get value
+#define DMAOPERANDBADDR 0x21      // write: set value, work routine: get value
+#define DMAOPERANDCADDR 0x25      // write: set value, work routine: get value
+
+
+void *dma_buf;
 static int Major, Minor;
 static int hw5_num = 0;
 struct cdev *dev_cdevp = NULL;
@@ -33,11 +49,13 @@ static struct file_operations drv_fops = {
 };
 
 static int drv_open(struct inode *inode, struct file *filp){
+	try_module_get(THIS_MODULE);
 	printk("OS_HW5:%s():device open\n",__FUNCTION__);
 	return 0;
 }
 
 static int drv_release(struct inode *inode, struct file *flip){
+	module_put(THIS_MODULE);
 	printk("OS_HW5:%s():device release\n",__FUNCTION__);
 	return 0;
 }
@@ -45,7 +63,6 @@ static int drv_release(struct inode *inode, struct file *flip){
 static int drv_ioctl(struct file *flip, unsigned int cmd, unsigned long args){
 	int ret = 0;
 	int value = 0;
-	printk("OS_HW5:%s():.... cmd = %d vs %d\n",__FUNCTION__, _IOC_NR(cmd), _IOC_NR(HW5_IOCSETSTUID));
 	switch(cmd){
 		case HW5_IOCSETSTUID:
 			ret = __get_user(hw5_num, (int __user *)args);
@@ -127,6 +144,12 @@ static int init_modules(void){
 		printk("OS_HW5:%s():add chr dev failed\n", __FUNCTION__);
 		goto failed;
 	}
+	
+	dma_buf = kmalloc(DMA_BUFSIZE, GFP_KERNEL);
+	if( dma_buf )	
+		printk("%s:%s():allocate dma buffer\n", OS_HW5, __FUNCTION__);
+	else
+		printk("%s:%s():allocate dma buffer FAILED !!\n", OS_HW5, __FUNCTION__);
 
 	return 0;
 
@@ -142,7 +165,6 @@ failed:
 
 static void exit_modules(void){
 	dev_t dev;
-	printk("OS_HW5:%s():unregister chrdev\n",__FUNCTION__);
 	/*  Unregister character device */
 
 	dev = MKDEV(Major, Minor);
@@ -150,8 +172,13 @@ static void exit_modules(void){
 		cdev_del(dev_cdevp);
 		kfree(dev_cdevp);
 	}
-	unregister_chrdev(Major, EXAMPLE_NAME);
+	kfree( dma_buf );
+	printk("%s:%s():free dma buffer\n", OS_HW5, __FUNCTION__ );
 
+
+	unregister_chrdev(Major, EXAMPLE_NAME);
+	printk("OS_HW5:%s():unregister chrdev\n",__FUNCTION__);
+	
 	printk("OS_HW5:%s():..................End.................\n",__FUNCTION__);
 }
 
